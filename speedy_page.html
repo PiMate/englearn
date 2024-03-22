@@ -1,0 +1,2221 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speedy Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'EpilepsySans', sans-serif;
+            background-color: #181818; /* Цвет фона - тёмный */
+            color: #fff; /* Цвет текста - белый */
+        }
+
+        .header {
+            width: 100%;
+            background-color: #282828; /* Цвет плашки хедера */
+            color: #e0e0e0;
+            padding: 20px;
+            text-align: left;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 60px); /* Учитываем высоту хедера */
+            padding: 20px;
+            margin-top: 60px; /* Учитываем высоту хедера */
+            max-width: 400px;
+            max-height: 400px;
+            margin: 100px auto 0;
+            background-color: rgba(40, 40, 40, 0.9); /* Цвет фона контейнера с прозрачностью */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .word {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
+            border: 2px solid #fff; /* Цвет рамки опций */
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            background-color: transparent; /* Прозрачный фон опций */
+            color: #fff;
+        }
+
+        .option:hover {
+            background-color: #fff; /* Цвет фона опции при наведении */
+            color: #121212; /* Цвет текста опции при наведении */
+        }
+
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .result {
+            font-size: 36px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        #returnHome {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            background-color: #fff; /* Цвет фона кнопки "Return to Home Page" */
+            color: #121212; /* Цвет текста кнопки "Return to Home Page" */
+            margin-top: 20px;
+        }
+
+        #returnHome:hover {
+            background-color: #121212; /* Цвет фона кнопки при наведении */
+            color: #fff; /* Цвет текста кнопки при наведении */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        Speedy Game
+    </div>
+    <div class="container">
+        <div class="timer">Timer: <span id="timer">60</span> seconds</div>
+        <div class="word" id="word">Loading...</div>
+        <div class="options" id="options">
+            <!-- Options will be dynamically populated using JavaScript -->
+        </div>
+        <div class="score" id="score">Score: 0</div>
+        <div class="score" id="difficulty">Difficulty: 1</div>
+        <div class="result" id="result">Game Over</div>
+        <button id="returnHome" style="display: none;">Return to Home Page</button>
+    </div>
+
+    <script>
+        // Dummy data for demonstration purposes
+        const words = [
+            { eng: 'apple', rus: 'яблоко', difficulty: 1  },
+            { eng: 'orange', rus: 'апельсин', difficulty: 1  },
+            { eng: 'cat', rus: 'кот', difficulty: 1  },
+            { eng: 'dog', rus: 'собака', difficulty: 1  },
+            { eng: 'house', rus: 'дом', difficulty: 1  },
+            { eng: 'car', rus: 'машина', difficulty: 1  },
+            { eng: 'tree', rus: 'дерево', difficulty: 1  },
+            { eng: 'flower', rus: 'цветок', difficulty: 1  },
+            { eng: 'book', rus: 'книга', difficulty: 1  },
+            { eng: 'computer', rus: 'компьютер' },
+    { eng: 'table', rus: 'стол', difficulty: 1  },
+    { eng: 'chair', rus: 'стул', difficulty: 1  },
+    { eng: 'pen', rus: 'ручка', difficulty: 1  },
+    { eng: 'pencil', rus: 'карандаш', difficulty: 1  },
+    { eng: 'phone', rus: 'телефон', difficulty: 1  },
+    { eng: 'lamp', rus: 'лампа', difficulty: 1  },
+    { eng: 'window', rus: 'окно', difficulty: 1  },
+    { eng: 'door', rus: 'дверь', difficulty: 1  },
+    { eng: 'sky', rus: 'небо', difficulty: 1  },
+    { eng: 'sun', rus: 'солнце', difficulty: 1  },
+    { eng: 'moon', rus: 'луна', difficulty: 1  },
+    { eng: 'star', rus: 'звезда', difficulty: 1  },
+    { eng: 'cloud', rus: 'облако', difficulty: 1  },
+    { eng: 'rain', rus: 'дождь', difficulty: 1  },
+    { eng: 'snow', rus: 'снег', difficulty: 1  },
+    { eng: 'ice', rus: 'лёд', difficulty: 1  },
+    { eng: 'fire', rus: 'огонь', difficulty: 1  },
+    { eng: 'water', rus: 'вода', difficulty: 1  },
+    { eng: 'earth', rus: 'земля', difficulty: 1  },
+    { eng: 'air', rus: 'воздух', difficulty: 1  },
+    { eng: 'mountain', rus: 'гора', difficulty: 1  },
+    { eng: 'river', rus: 'река', difficulty: 1  },
+    { eng: 'lake', rus: 'озеро', difficulty: 1  },
+    { eng: 'ocean', rus: 'океан', difficulty: 1  },
+    { eng: 'sea', rus: 'море', difficulty: 1  },
+    { eng: 'beach', rus: 'пляж', difficulty: 1  },
+    { eng: 'forest', rus: 'лес', difficulty: 1  },
+    { eng: 'bird', rus: 'птица', difficulty: 1  },
+    { eng: 'fish', rus: 'рыба', difficulty: 1  },
+    { eng: 'cat', rus: 'кот', difficulty: 1  },
+    { eng: 'mouse', rus: 'мышь', difficulty: 1  },
+    { eng: 'snake', rus: 'змея', difficulty: 1  },
+    { eng: 'lion', rus: 'лев', difficulty: 1  },
+    { eng: 'tiger', rus: 'тигр', difficulty: 1  },
+    { eng: 'elephant', rus: 'слон', difficulty: 1  },
+    { eng: 'monkey', rus: 'обезьяна', difficulty: 1  },
+    { eng: 'horse', rus: 'лошадь', difficulty: 1  },
+    { eng: 'cow', rus: 'корова', difficulty: 1  },
+    { eng: 'pig', rus: 'свинья', difficulty: 1  },
+    { eng: 'chicken', rus: 'курица', difficulty: 1  },
+    { eng: 'egg', rus: 'яйцо', difficulty: 1  },
+    { eng: 'bread', rus: 'хлеб', difficulty: 1  },
+    { eng: 'cheese', rus: 'сыр', difficulty: 1  },
+    { eng: 'milk', rus: 'молоко', difficulty: 1  },
+    { eng: 'butter', rus: 'масло', difficulty: 1  },
+    { eng: 'juice', rus: 'сок', difficulty: 1  },
+    { eng: 'coffee', rus: 'кофе', difficulty: 1  },
+    { eng: 'tea', rus: 'чай', difficulty: 1  },
+    { eng: 'sugar', rus: 'сахар', difficulty: 1  },
+    { eng: 'salt', rus: 'соль', difficulty: 1  },
+    { eng: 'pepper', rus: 'перец', difficulty: 1  },
+    { eng: 'knife', rus: 'нож', difficulty: 1  },
+    { eng: 'fork', rus: 'вилка', difficulty: 1  },
+    { eng: 'spoon', rus: 'ложка', difficulty: 1  },
+    { eng: 'plate', rus: 'тарелка', difficulty: 1  },
+    { eng: 'glass', rus: 'стакан', difficulty: 1  },
+    { eng: 'bottle', rus: 'бутылка', difficulty: 1  },
+    { eng: 'box', rus: 'коробка', difficulty: 1  },
+    { eng: 'bag', rus: 'сумка', difficulty: 1  },
+    { eng: 'shoe', rus: 'туфля', difficulty: 1  },
+    { eng: 'sock', rus: 'носок', difficulty: 1  },
+    { eng: 'hat', rus: 'шапка', difficulty: 1  },
+    { eng: 'glove', rus: 'перчатка', difficulty: 1  },
+    { eng: 'coat', rus: 'пальто', difficulty: 1  },
+    { eng: 'shirt', rus: 'рубашка', difficulty: 1  },
+    { eng: 'pants', rus: 'брюки', difficulty: 1  },
+    { eng: 'dress', rus: 'платье', difficulty: 1  },
+    { eng: 'skirt', rus: 'юбка', difficulty: 1  },
+    { eng: 'sock', rus: 'носок', difficulty: 1  },
+    { eng: 'tie', rus: 'галстук', difficulty: 1  },
+    { eng: 'scarf', rus: 'шарф', difficulty: 1  },
+    { eng: 'ring', rus: 'кольцо', difficulty: 1  },
+    { eng: 'bracelet', rus: 'браслет', difficulty: 1  },
+    { eng: 'earrings', rus: 'серьги', difficulty: 1  },
+    { eng: 'necklace', rus: 'ожерелье', difficulty: 1  },
+    { eng: 'watch', rus: 'часы', difficulty: 1  },
+    { eng: 'wallet', rus: 'кошелек', difficulty: 1  },
+    { eng: 'key', rus: 'ключ', difficulty: 1  },
+    { eng: 'phone', rus: 'телефон', difficulty: 1  },
+    { eng: 'camera', rus: 'камера', difficulty: 1  },
+    { eng: 'television', rus: 'телевизор', difficulty: 1  },
+    { eng: 'radio', rus: 'радио', difficulty: 1  },
+    { eng: 'music', rus: 'музыка', difficulty: 1  },
+    { eng: 'movie', rus: 'фильм', difficulty: 1  },
+    { eng: 'photo', rus: 'фото', difficulty: 1  },
+    { eng: 'video', rus: 'видео', difficulty: 1  },
+    { eng: 'game', rus: 'игра', difficulty: 1  },
+    { eng: 'sport', rus: 'спорт', difficulty: 1  },
+    { eng: 'exercise', rus: 'упражнение', difficulty: 1  },
+    { eng: 'work', rus: 'работа', difficulty: 1  },
+    { eng: 'study', rus: 'учеба', difficulty: 1  },
+    { eng: 'friend', rus: 'друг', difficulty: 1  },
+    { eng: 'family', rus: 'семья', difficulty: 1  },
+    { eng: 'love', rus: 'любовь', difficulty: 1  },
+    { eng: 'happiness', rus: 'счастье', difficulty: 1  },
+    { eng: 'sadness', rus: 'грусть', difficulty: 1  },
+    { eng: 'anger', rus: 'злость', difficulty: 1  },
+    { eng: 'fear', rus: 'страх', difficulty: 1  },
+    { eng: 'surprise', rus: 'удивление', difficulty: 1  },
+    { eng: 'joy', rus: 'радость', difficulty: 1  },
+    { eng: 'peace', rus: 'мир', difficulty: 1  },
+    { eng: 'war', rus: 'война', difficulty: 1  },
+    { eng: 'problem', rus: 'проблема', difficulty: 1  },
+    { eng: 'solution', rus: 'решение', difficulty: 1  },
+    { eng: 'question', rus: 'вопрос', difficulty: 1  },
+    { eng: 'answer', rus: 'ответ', difficulty: 1  },
+    { eng: 'idea', rus: 'идея', difficulty: 1  },
+    { eng: 'dream', rus: 'мечта', difficulty: 1  },
+    { eng: 'goal', rus: 'цель', difficulty: 1  },
+    { eng: 'plan', rus: 'план', difficulty: 1  },
+    { eng: 'task', rus: 'задача', difficulty: 1  },
+    { eng: 'project', rus: 'проект', difficulty: 1  },
+    { eng: 'job', rus: 'работа', difficulty: 1  }
+        ];
+        const words2 = [
+
+    {
+eng: 'perception',
+rus: 'восприятие',
+difficulty: 2
+},
+{
+eng: 'obstacle',
+rus: 'препятствие',
+difficulty: 2
+},
+{
+eng: 'eloquent',
+rus: 'красноречивый',
+difficulty: 2
+},
+{
+eng: 'ambiguous',
+rus: 'неоднозначный',
+difficulty: 2
+},
+{
+eng: 'precipice',
+rus: 'пропасть',
+difficulty: 2
+},
+{
+eng: 'infrastructure',
+rus: 'инфраструктура',
+difficulty: 2
+},
+{
+eng: 'phenomenon',
+rus: 'явление',
+difficulty: 2
+},
+{
+eng: 'resilience',
+rus: 'устойчивость',
+difficulty: 2
+},
+{
+eng: 'conundrum',
+rus: 'загадка',
+difficulty: 2
+},
+{
+eng: 'manifestation',
+rus: 'проявление',
+difficulty: 2
+},
+{
+eng: 'dilemma',
+rus: 'дилемма',
+difficulty: 2
+},
+{
+eng: 'consequence',
+rus: 'последствие',
+difficulty: 2
+},
+{
+eng: 'paradox',
+rus: 'парадокс',
+difficulty: 2
+},
+{
+eng: 'endeavor',
+rus: 'стремление',
+difficulty: 2
+},
+{
+eng: 'exemplary',
+rus: 'примерный',
+difficulty: 2
+},
+{
+eng: 'complacent',
+rus: 'самодовольный',
+difficulty: 2
+},
+{
+eng: 'jurisdiction',
+rus: 'юрисдикция',
+difficulty: 2
+},
+{
+eng: 'imminent',
+rus: 'неминуемый',
+difficulty: 2
+},
+{
+eng: 'proficient',
+rus: 'умелый',
+difficulty: 2
+},
+{
+eng: 'reverberate',
+rus: 'эхом отзываться',
+difficulty: 2
+},
+{
+eng: 'formidable',
+rus: 'внушительный',
+difficulty: 2
+},
+{
+eng: 'diligent',
+rus: 'усердный',
+difficulty: 2
+},
+{
+eng: 'inquisitive',
+rus: 'любознательный',
+difficulty: 2
+},
+{
+eng: 'eccentric',
+rus: 'эксцентричный',
+difficulty: 2
+},
+{
+eng: 'quintessential',
+rus: 'идеальный',
+difficulty: 2
+},
+{
+eng: 'labyrinth',
+rus: 'лабиринт',
+difficulty: 2
+},
+{
+eng: 'exacerbate',
+rus: 'обострять',
+difficulty: 2
+},
+{
+eng: 'renowned',
+rus: 'прославленный',
+difficulty: 2
+},
+{
+eng: 'unprecedented',
+rus: 'безпрецедентный',
+difficulty: 2
+},
+{
+eng: 'ubiquitous',
+rus: 'вездесущий',
+difficulty: 2
+},
+{
+eng: 'indispensable',
+rus: 'незаменимый',
+difficulty: 2
+},
+{
+eng: 'spontaneous',
+rus: 'спонтанный',
+difficulty: 2
+},
+{
+eng: 'intricate',
+rus: 'сложный',
+difficulty: 2
+},
+{
+eng: 'prolific',
+rus: 'плодовитый',
+difficulty: 2
+},
+{
+eng: 'perplexing',
+rus: 'озадачивающий',
+difficulty: 2
+},
+{
+eng: 'inherent',
+rus: 'присущий',
+difficulty: 2
+},
+{
+eng: 'conducive',
+rus: 'способствующий',
+difficulty: 2
+},
+{
+eng: 'lucrative',
+rus: 'прибыльный',
+difficulty: 2
+},
+{
+eng: 'infallible',
+rus: 'безошибочный',
+difficulty: 2
+},
+{
+eng: 'invaluable',
+rus: 'неоценимый',
+difficulty: 2
+},
+{
+eng: 'conscientious',
+rus: 'добросовестный',
+difficulty: 2
+},
+{
+eng: 'profound',
+rus: 'глубокий',
+difficulty: 2
+},
+{
+eng: 'conspicuous',
+rus: 'заметный',
+difficulty: 2
+},
+{
+eng: 'dubious',
+rus: 'сомнительный',
+difficulty: 2
+},
+{
+eng: 'prosperous',
+rus: 'процветающий',
+difficulty: 2
+},
+{
+eng: 'transient',
+rus: 'мимолетный',
+difficulty: 2
+},
+{
+eng: 'innovative',
+rus: 'инновационный',
+difficulty: 2
+},
+{
+eng: 'cumbersome',
+rus: 'громоздкий',
+difficulty: 2
+},
+{
+eng: 'scrutiny',
+rus: 'изучение',
+difficulty: 2
+},
+{
+eng: 'flourish',
+rus: 'процветать',
+difficulty: 2
+},
+{
+eng: 'tenacious',
+rus: 'упорный',
+difficulty: 2
+},
+{
+eng: 'imperative',
+rus: 'обязательный',
+difficulty: 2
+},
+{
+eng: 'elusive',
+rus: 'неуловимый',
+difficulty: 2
+},
+{
+eng: 'endeavor',
+rus: 'стремление',
+difficulty: 2
+},
+{
+eng: 'profound',
+rus: 'глубокий',
+difficulty: 2
+},
+{
+eng: 'culmination',
+rus: 'крупное событие',
+difficulty: 2
+},
+    ];
+    const words3 = [
+    { eng: 'pisyaaaaaaaaaaaa', rus: 'дом', difficulty: 3 },
+    { eng: 'car', rus: 'машина', difficulty: 3 },
+    {
+eng: 'soporific',
+rus: 'снотворный',
+difficulty: 3
+},
+{
+eng: 'lackadaisical',
+rus: 'небрежный',
+difficulty: 3
+},
+{
+eng: 'quixotic',
+rus: 'несбыточный',
+difficulty: 3
+},
+{
+eng: 'discombobulate',
+rus: 'путать',
+difficulty: 3
+},
+{
+eng: 'sesquipedalian',
+rus: 'длинноногий',
+difficulty: 3
+},
+{
+eng: 'gobbledygook',
+rus: 'чушь',
+difficulty: 3
+},
+{
+eng: 'kerfuffle',
+rus: 'суета',
+difficulty: 3
+},
+{
+eng: 'flummox',
+rus: 'смущать',
+difficulty: 3
+},
+{
+eng: 'brouhaha',
+rus: 'шумиха',
+difficulty: 3
+},
+{
+eng: 'perspicacious',
+rus: 'проницательный',
+difficulty: 3
+},
+{
+eng: 'idiosyncrasy',
+rus: 'особенность',
+difficulty: 3
+},
+{
+eng: 'equanimity',
+rus: 'спокойствие',
+difficulty: 3
+},
+{
+eng: 'facetious',
+rus: 'шутливый',
+difficulty: 3
+},
+{
+eng: 'vicissitude',
+rus: 'перемена',
+difficulty: 3
+},
+{
+eng: 'mnemonic',
+rus: 'мнемонический',
+difficulty: 3
+},
+{
+eng: 'serendipity',
+rus: 'счастливая случайность',
+difficulty: 3
+},
+{
+eng: 'truculent',
+rus: 'воинственный',
+difficulty: 3
+},
+{
+eng: 'lugubrious',
+rus: 'мрачный',
+difficulty: 3
+},
+{
+eng: 'obstreperous',
+rus: 'шумный',
+difficulty: 3
+},
+{
+eng: 'doppelgänger',
+rus: 'двойник',
+difficulty: 3
+},
+{
+eng: 'limerence',
+rus: 'любовная лимеренс',
+difficulty: 3
+},
+{
+eng: 'jejune',
+rus: 'нудный',
+difficulty: 3
+},
+{
+eng: 'zeitgeist',
+rus: 'дух времени',
+difficulty: 3
+},
+{
+eng: 'sesquicentennial',
+rus: 'семисотлетие',
+difficulty: 3
+},
+{
+eng: 'unctuous',
+rus: 'поддельно милый',
+difficulty: 3
+},
+{
+eng: 'lagniappe',
+rus: 'подарок от продавца',
+difficulty: 3
+},
+{
+eng: 'egregious',
+rus: 'вопиющий',
+difficulty: 3
+},
+{
+eng: 'persiflage',
+rus: 'легкомыслие',
+difficulty: 3
+},
+{
+eng: 'obsequious',
+rus: 'покорный',
+difficulty: 3
+},
+{
+eng: 'defenestration',
+rus: 'выбрасывание из окна',
+difficulty: 3
+},
+{
+eng: 'tintinnabulation',
+rus: 'звон',
+difficulty: 3
+},
+{
+eng: 'prestidigitation',
+rus: 'фокусы',
+difficulty: 3
+},
+
+{
+eng: 'onomatopoeia',
+rus: 'звукоподражание',
+difficulty: 3
+},
+{
+eng: 'sesquicentennial',
+rus: 'семисотлетие',
+difficulty: 3
+},
+{
+eng: 'rhinorrhea',
+rus: 'насморк',
+difficulty: 3
+},
+{
+eng: 'triskaidekaphobia',
+rus: 'боязнь числа тринадцать',
+difficulty: 3
+},
+{
+eng: 'odontorrhea',
+rus: 'повышенное слюноотделение',
+difficulty: 3
+},
+{
+eng: 'ichthyophobia',
+rus: 'боязнь рыб',
+difficulty: 3
+},
+{
+eng: 'epistemology',
+rus: 'эпистемология',
+difficulty: 3
+},
+{
+eng: 'sycophant',
+rus: 'льстец',
+difficulty: 3
+},
+{
+eng: 'malfeasance',
+rus: 'проступок',
+difficulty: 3
+},
+{
+eng: 'mellifluous',
+rus: 'сладкозвучный',
+difficulty: 3
+},
+{
+eng: 'sagacious',
+rus: 'прозорливый',
+difficulty: 3
+},
+{
+eng: 'circumlocution',
+rus: 'обходительность',
+difficulty: 3
+},
+{
+eng: 'ubiquitous',
+rus: 'вездесущий',
+difficulty: 3
+},
+{
+eng: 'ludicrous',
+rus: 'смехотворный',
+difficulty: 3
+},
+{
+eng: 'idiosyncrasy',
+rus: 'идиосинкразия',
+difficulty: 3
+},
+{
+eng: 'cognizant',
+rus: 'осведомленный',
+difficulty: 3
+},
+{
+eng: 'exacerbate',
+rus: 'обострять',
+difficulty: 3
+},
+{
+eng: 'precarious',
+rus: 'ненадежный',
+difficulty: 3
+},
+{
+eng: 'venerable',
+rus: 'почтенный',
+difficulty: 3
+},
+{
+eng: 'ostentatious',
+rus: 'показной',
+difficulty: 3
+},
+{
+eng: 'ephemeral',
+rus: 'мимолетный',
+difficulty: 3
+},
+{
+eng: 'deleterious',
+rus: 'вредный',
+difficulty: 3
+},
+{
+eng: 'obfuscate',
+rus: 'затуманивать',
+difficulty: 3
+},
+{
+eng: 'juxtaposition',
+rus: 'параллельное расположение',
+difficulty: 3
+},
+{
+eng: 'equanimity',
+rus: 'хладнокровие',
+difficulty: 3
+},
+{
+eng: 'perpetuity',
+rus: 'вечность',
+difficulty: 3
+},
+{
+eng: 'ubiquity',
+rus: 'вездесущесть',
+difficulty: 3
+},
+{
+eng: 'quintessential',
+rus: 'идеальный',
+difficulty: 3
+},
+{
+eng: 'disseminate',
+rus: 'распространять',
+difficulty: 3
+},
+{
+eng: 'anachronistic',
+rus: 'анахронический',
+difficulty: 3
+},
+{
+eng: 'solipsistic',
+rus: 'солипсистический',
+difficulty: 3
+},
+{
+eng: 'circumlocution',
+rus: 'обходной путь',
+difficulty: 3
+},
+{
+eng: 'indefatigable',
+rus: 'неутомимый',
+difficulty: 3
+},
+{
+eng: 'mendacious',
+rus: 'лживый',
+difficulty: 3
+},
+{
+eng: 'quixotic',
+rus: 'рыцарский',
+difficulty: 3
+},
+{
+eng: 'myopic',
+rus: 'короткозорий',
+difficulty: 3
+},
+{
+eng: 'esoteric',
+rus: 'эзотерический',
+difficulty: 3
+},
+{
+eng: 'onerous',
+rus: 'тяжелый',
+difficulty: 3
+},
+{
+eng: 'pellucid',
+rus: 'прозрачный',
+difficulty: 3
+},
+{
+eng: 'proclivity',
+rus: 'склонность',
+difficulty: 3
+},
+{
+eng: 'pulchritudinous',
+rus: 'красивый',
+difficulty: 3
+},
+{
+eng: 'quagmire',
+rus: 'трясина',
+difficulty: 3
+},
+{
+eng: 'refulgent',
+rus: 'светящийся',
+difficulty: 3
+},
+{
+eng: 'sesquipedalian',
+rus: 'длинношеее',
+difficulty: 3
+},
+{
+eng: 'ubiquitarian',
+rus: 'вездесущий',
+difficulty: 3
+},
+{
+eng: 'vilipend',
+rus: 'упрекать',
+difficulty: 3
+},
+{
+eng: 'vituperative',
+rus: 'ругательный',
+difficulty: 3
+},
+{
+eng: 'fuliginous',
+rus: 'темный',
+difficulty: 3
+},
+{
+eng: 'peregrinate',
+rus: 'путешествовать',
+difficulty: 3
+},
+{
+eng: 'percipient',
+rus: 'понимающий',
+difficulty: 3
+},
+{
+eng: 'vociferous',
+rus: 'крикливый',
+difficulty: 3
+},
+{
+eng: 'lachrymose',
+rus: 'печальный',
+difficulty: 3
+},];
+        let timerValue = 60;
+        let score = 0;
+
+
+        function getWordsByScore(score) {
+        if (score < 150) {
+            return words;
+        } else if (score < 300) {
+            return words2;
+        } else {
+            return words3;
+        }
+
+
+
+    }
+    function startGame() {
+    // Reset values
+    timerValue = 60;
+    score = 0;
+    updateTimer();
+    updateScore();
+    hideResult();
+
+    // Start timer
+    const timerInterval = setInterval(() => {
+        timerValue--;
+        updateTimer();
+
+        if (timerValue <= 0) {
+            clearInterval(timerInterval);
+            showResult();
+            showReturnHomeButton();
+            displayFinalScore(); // Добавлено отображение окончательного счета
+        }
+    }, 1000);
+
+    // Display initial word and options
+    displayWord();
+    displayOptions();
+}
+
+// Добавлена функция для отображения окончательного счета
+function displayFinalScore() {
+    document.getElementById('score').textContent = `Final Score: ${score}`;
+    document.getElementById('difficulty').style.display = 'none'; // Скрыть отображение сложности
+    document.getElementById('options').style.display = 'none'; // Скрыть варианты ответов
+    document.getElementById('word').style.display = 'none'; // Скрыть слово
+}
+
+function updateTimer() {
+    document.getElementById('timer').textContent = timerValue;
+}
+
+function updateScore() {
+    const scoreElement = document.getElementById('score');
+    scoreElement.textContent = `Score: ${score}`;
+    
+    // Определение сложности в зависимости от количества очков
+    let difficulty = 1;
+    if (score >= 300) {
+        difficulty = 3;
+    } else if (score >= 150) {
+        difficulty = 2;
+    }
+    
+    const difficultyElement = document.getElementById('difficulty');
+    difficultyElement.textContent = `Difficulty: ${difficulty}`;
+}
+function hideResult() {
+    document.getElementById('result').style.display = 'none';
+}
+
+function showResult() {
+    document.getElementById('result').style.display = 'block';
+}
+
+function showReturnHomeButton() {
+    document.getElementById('returnHome').style.display = 'block';
+    document.getElementById('returnHome').addEventListener('click', () => {
+        window.location.href = 'index.html'; // Replace with the correct URL of your home page
+    });
+}
+
+function displayWord() {
+    const availableWords = getWordsByScore(score);
+    const randomIndex = Math.floor(Math.random() * availableWords.length);
+    const randomWord = availableWords[randomIndex];
+
+    document.getElementById('word').textContent = randomWord.eng;
+}
+
+function displayOptions() {
+    const availableWords = getWordsByScore(score);
+    const correctOptionIndex = Math.floor(Math.random() * 3);
+    const correctWord = availableWords.find(word => word.eng === document.getElementById('word').textContent);
+    const options = [];
+
+    for (let i = 0; i < 3; i++) {
+        const optionWord = (i === correctOptionIndex) ? correctWord.rus : getRandomWord(getWordsByScore(score)).rus;
+        options.push(optionWord);
+    }
+
+    // Shuffle options to randomize their order
+    options.sort(() => Math.random() - 0.5);
+
+    const optionsContainer = document.getElementById('options');
+    optionsContainer.innerHTML = ''; // Clear previous options
+
+    options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.classList.add('option');
+        optionElement.textContent = option;
+        optionElement.addEventListener('click', () => checkAnswer(option === correctWord.rus));
+        optionsContainer.appendChild(optionElement);
+    });
+}
+
+function getRandomWord(wordList) {
+    const randomIndex = Math.floor(Math.random() * wordList.length);
+    return wordList[randomIndex];
+}
+
+function checkAnswer(isCorrect) {
+    console.log("Is answer correct?", isCorrect); // Debugging output
+    if (isCorrect) {
+        score += 10;
+    }
+    else {score = score - 5;
+    
+    }
+    {
+            updateScore();
+    }
+
+    displayWord();
+    displayOptions();
+}
+
+
+document.getElementById('returnHome').addEventListener('click', () => {
+    window.location.href = 'index.html'; // Replace with the correct URL of your home page
+});
+
+// Start the game when the page loads
+startGame();
+    </script>
+</body>
+</html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speedy Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'EpilepsySans', sans-serif;
+            background-color: #181818; /* Цвет фона - тёмный */
+            color: #fff; /* Цвет текста - белый */
+        }
+
+        .header {
+            width: 100%;
+            background-color: #282828; /* Цвет плашки хедера */
+            color: #e0e0e0;
+            padding: 20px;
+            text-align: left;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 60px); /* Учитываем высоту хедера */
+            padding: 20px;
+            margin-top: 60px; /* Учитываем высоту хедера */
+            max-width: 400px;
+            max-height: 400px;
+            margin: 100px auto 0;
+            background-color: rgba(40, 40, 40, 0.9); /* Цвет фона контейнера с прозрачностью */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .word {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
+            border: 2px solid #fff; /* Цвет рамки опций */
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            background-color: transparent; /* Прозрачный фон опций */
+            color: #fff;
+        }
+
+        .option:hover {
+            background-color: #fff; /* Цвет фона опции при наведении */
+            color: #121212; /* Цвет текста опции при наведении */
+        }
+
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .result {
+            font-size: 36px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        #returnHome {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            background-color: #fff; /* Цвет фона кнопки "Return to Home Page" */
+            color: #121212; /* Цвет текста кнопки "Return to Home Page" */
+            margin-top: 20px;
+        }
+
+        #returnHome:hover {
+            background-color: #121212; /* Цвет фона кнопки при наведении */
+            color: #fff; /* Цвет текста кнопки при наведении */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        Speedy Game
+    </div>
+    <div class="container">
+        <div class="timer">Timer: <span id="timer">60</span> seconds</div>
+        <div class="word" id="word">Loading...</div>
+        <div class="options" id="options">
+            <!-- Options will be dynamically populated using JavaScript -->
+        </div>
+        <div class="score" id="score">Score: 0</div>
+        <div class="score" id="difficulty">Difficulty: 1</div>
+        <div class="result" id="result">Game Over</div>
+        <button id="returnHome" style="display: none;">Return to Home Page</button>
+    </div>
+
+    <script>
+        // Dummy data for demonstration purposes
+        const words = [
+            { eng: 'apple', rus: 'яблоко', difficulty: 1  },
+            { eng: 'orange', rus: 'апельсин', difficulty: 1  },
+            { eng: 'cat', rus: 'кот', difficulty: 1  },
+            { eng: 'dog', rus: 'собака', difficulty: 1  },
+            { eng: 'house', rus: 'дом', difficulty: 1  },
+            { eng: 'car', rus: 'машина', difficulty: 1  },
+            { eng: 'tree', rus: 'дерево', difficulty: 1  },
+            { eng: 'flower', rus: 'цветок', difficulty: 1  },
+            { eng: 'book', rus: 'книга', difficulty: 1  },
+            { eng: 'computer', rus: 'компьютер' },
+    { eng: 'table', rus: 'стол', difficulty: 1  },
+    { eng: 'chair', rus: 'стул', difficulty: 1  },
+    { eng: 'pen', rus: 'ручка', difficulty: 1  },
+    { eng: 'pencil', rus: 'карандаш', difficulty: 1  },
+    { eng: 'phone', rus: 'телефон', difficulty: 1  },
+    { eng: 'lamp', rus: 'лампа', difficulty: 1  },
+    { eng: 'window', rus: 'окно', difficulty: 1  },
+    { eng: 'door', rus: 'дверь', difficulty: 1  },
+    { eng: 'sky', rus: 'небо', difficulty: 1  },
+    { eng: 'sun', rus: 'солнце', difficulty: 1  },
+    { eng: 'moon', rus: 'луна', difficulty: 1  },
+    { eng: 'star', rus: 'звезда', difficulty: 1  },
+    { eng: 'cloud', rus: 'облако', difficulty: 1  },
+    { eng: 'rain', rus: 'дождь', difficulty: 1  },
+    { eng: 'snow', rus: 'снег', difficulty: 1  },
+    { eng: 'ice', rus: 'лёд', difficulty: 1  },
+    { eng: 'fire', rus: 'огонь', difficulty: 1  },
+    { eng: 'water', rus: 'вода', difficulty: 1  },
+    { eng: 'earth', rus: 'земля', difficulty: 1  },
+    { eng: 'air', rus: 'воздух', difficulty: 1  },
+    { eng: 'mountain', rus: 'гора', difficulty: 1  },
+    { eng: 'river', rus: 'река', difficulty: 1  },
+    { eng: 'lake', rus: 'озеро', difficulty: 1  },
+    { eng: 'ocean', rus: 'океан', difficulty: 1  },
+    { eng: 'sea', rus: 'море', difficulty: 1  },
+    { eng: 'beach', rus: 'пляж', difficulty: 1  },
+    { eng: 'forest', rus: 'лес', difficulty: 1  },
+    { eng: 'bird', rus: 'птица', difficulty: 1  },
+    { eng: 'fish', rus: 'рыба', difficulty: 1  },
+    { eng: 'cat', rus: 'кот', difficulty: 1  },
+    { eng: 'mouse', rus: 'мышь', difficulty: 1  },
+    { eng: 'snake', rus: 'змея', difficulty: 1  },
+    { eng: 'lion', rus: 'лев', difficulty: 1  },
+    { eng: 'tiger', rus: 'тигр', difficulty: 1  },
+    { eng: 'elephant', rus: 'слон', difficulty: 1  },
+    { eng: 'monkey', rus: 'обезьяна', difficulty: 1  },
+    { eng: 'horse', rus: 'лошадь', difficulty: 1  },
+    { eng: 'cow', rus: 'корова', difficulty: 1  },
+    { eng: 'pig', rus: 'свинья', difficulty: 1  },
+    { eng: 'chicken', rus: 'курица', difficulty: 1  },
+    { eng: 'egg', rus: 'яйцо', difficulty: 1  },
+    { eng: 'bread', rus: 'хлеб', difficulty: 1  },
+    { eng: 'cheese', rus: 'сыр', difficulty: 1  },
+    { eng: 'milk', rus: 'молоко', difficulty: 1  },
+    { eng: 'butter', rus: 'масло', difficulty: 1  },
+    { eng: 'juice', rus: 'сок', difficulty: 1  },
+    { eng: 'coffee', rus: 'кофе', difficulty: 1  },
+    { eng: 'tea', rus: 'чай', difficulty: 1  },
+    { eng: 'sugar', rus: 'сахар', difficulty: 1  },
+    { eng: 'salt', rus: 'соль', difficulty: 1  },
+    { eng: 'pepper', rus: 'перец', difficulty: 1  },
+    { eng: 'knife', rus: 'нож', difficulty: 1  },
+    { eng: 'fork', rus: 'вилка', difficulty: 1  },
+    { eng: 'spoon', rus: 'ложка', difficulty: 1  },
+    { eng: 'plate', rus: 'тарелка', difficulty: 1  },
+    { eng: 'glass', rus: 'стакан', difficulty: 1  },
+    { eng: 'bottle', rus: 'бутылка', difficulty: 1  },
+    { eng: 'box', rus: 'коробка', difficulty: 1  },
+    { eng: 'bag', rus: 'сумка', difficulty: 1  },
+    { eng: 'shoe', rus: 'туфля', difficulty: 1  },
+    { eng: 'sock', rus: 'носок', difficulty: 1  },
+    { eng: 'hat', rus: 'шапка', difficulty: 1  },
+    { eng: 'glove', rus: 'перчатка', difficulty: 1  },
+    { eng: 'coat', rus: 'пальто', difficulty: 1  },
+    { eng: 'shirt', rus: 'рубашка', difficulty: 1  },
+    { eng: 'pants', rus: 'брюки', difficulty: 1  },
+    { eng: 'dress', rus: 'платье', difficulty: 1  },
+    { eng: 'skirt', rus: 'юбка', difficulty: 1  },
+    { eng: 'sock', rus: 'носок', difficulty: 1  },
+    { eng: 'tie', rus: 'галстук', difficulty: 1  },
+    { eng: 'scarf', rus: 'шарф', difficulty: 1  },
+    { eng: 'ring', rus: 'кольцо', difficulty: 1  },
+    { eng: 'bracelet', rus: 'браслет', difficulty: 1  },
+    { eng: 'earrings', rus: 'серьги', difficulty: 1  },
+    { eng: 'necklace', rus: 'ожерелье', difficulty: 1  },
+    { eng: 'watch', rus: 'часы', difficulty: 1  },
+    { eng: 'wallet', rus: 'кошелек', difficulty: 1  },
+    { eng: 'key', rus: 'ключ', difficulty: 1  },
+    { eng: 'phone', rus: 'телефон', difficulty: 1  },
+    { eng: 'camera', rus: 'камера', difficulty: 1  },
+    { eng: 'television', rus: 'телевизор', difficulty: 1  },
+    { eng: 'radio', rus: 'радио', difficulty: 1  },
+    { eng: 'music', rus: 'музыка', difficulty: 1  },
+    { eng: 'movie', rus: 'фильм', difficulty: 1  },
+    { eng: 'photo', rus: 'фото', difficulty: 1  },
+    { eng: 'video', rus: 'видео', difficulty: 1  },
+    { eng: 'game', rus: 'игра', difficulty: 1  },
+    { eng: 'sport', rus: 'спорт', difficulty: 1  },
+    { eng: 'exercise', rus: 'упражнение', difficulty: 1  },
+    { eng: 'work', rus: 'работа', difficulty: 1  },
+    { eng: 'study', rus: 'учеба', difficulty: 1  },
+    { eng: 'friend', rus: 'друг', difficulty: 1  },
+    { eng: 'family', rus: 'семья', difficulty: 1  },
+    { eng: 'love', rus: 'любовь', difficulty: 1  },
+    { eng: 'happiness', rus: 'счастье', difficulty: 1  },
+    { eng: 'sadness', rus: 'грусть', difficulty: 1  },
+    { eng: 'anger', rus: 'злость', difficulty: 1  },
+    { eng: 'fear', rus: 'страх', difficulty: 1  },
+    { eng: 'surprise', rus: 'удивление', difficulty: 1  },
+    { eng: 'joy', rus: 'радость', difficulty: 1  },
+    { eng: 'peace', rus: 'мир', difficulty: 1  },
+    { eng: 'war', rus: 'война', difficulty: 1  },
+    { eng: 'problem', rus: 'проблема', difficulty: 1  },
+    { eng: 'solution', rus: 'решение', difficulty: 1  },
+    { eng: 'question', rus: 'вопрос', difficulty: 1  },
+    { eng: 'answer', rus: 'ответ', difficulty: 1  },
+    { eng: 'idea', rus: 'идея', difficulty: 1  },
+    { eng: 'dream', rus: 'мечта', difficulty: 1  },
+    { eng: 'goal', rus: 'цель', difficulty: 1  },
+    { eng: 'plan', rus: 'план', difficulty: 1  },
+    { eng: 'task', rus: 'задача', difficulty: 1  },
+    { eng: 'project', rus: 'проект', difficulty: 1  },
+    { eng: 'job', rus: 'работа', difficulty: 1  }
+        ];
+        const words2 = [
+
+    {
+eng: 'perception',
+rus: 'восприятие',
+difficulty: 2
+},
+{
+eng: 'obstacle',
+rus: 'препятствие',
+difficulty: 2
+},
+{
+eng: 'eloquent',
+rus: 'красноречивый',
+difficulty: 2
+},
+{
+eng: 'ambiguous',
+rus: 'неоднозначный',
+difficulty: 2
+},
+{
+eng: 'precipice',
+rus: 'пропасть',
+difficulty: 2
+},
+{
+eng: 'infrastructure',
+rus: 'инфраструктура',
+difficulty: 2
+},
+{
+eng: 'phenomenon',
+rus: 'явление',
+difficulty: 2
+},
+{
+eng: 'resilience',
+rus: 'устойчивость',
+difficulty: 2
+},
+{
+eng: 'conundrum',
+rus: 'загадка',
+difficulty: 2
+},
+{
+eng: 'manifestation',
+rus: 'проявление',
+difficulty: 2
+},
+{
+eng: 'dilemma',
+rus: 'дилемма',
+difficulty: 2
+},
+{
+eng: 'consequence',
+rus: 'последствие',
+difficulty: 2
+},
+{
+eng: 'paradox',
+rus: 'парадокс',
+difficulty: 2
+},
+{
+eng: 'endeavor',
+rus: 'стремление',
+difficulty: 2
+},
+{
+eng: 'exemplary',
+rus: 'примерный',
+difficulty: 2
+},
+{
+eng: 'complacent',
+rus: 'самодовольный',
+difficulty: 2
+},
+{
+eng: 'jurisdiction',
+rus: 'юрисдикция',
+difficulty: 2
+},
+{
+eng: 'imminent',
+rus: 'неминуемый',
+difficulty: 2
+},
+{
+eng: 'proficient',
+rus: 'умелый',
+difficulty: 2
+},
+{
+eng: 'reverberate',
+rus: 'эхом отзываться',
+difficulty: 2
+},
+{
+eng: 'formidable',
+rus: 'внушительный',
+difficulty: 2
+},
+{
+eng: 'diligent',
+rus: 'усердный',
+difficulty: 2
+},
+{
+eng: 'inquisitive',
+rus: 'любознательный',
+difficulty: 2
+},
+{
+eng: 'eccentric',
+rus: 'эксцентричный',
+difficulty: 2
+},
+{
+eng: 'quintessential',
+rus: 'идеальный',
+difficulty: 2
+},
+{
+eng: 'labyrinth',
+rus: 'лабиринт',
+difficulty: 2
+},
+{
+eng: 'exacerbate',
+rus: 'обострять',
+difficulty: 2
+},
+{
+eng: 'renowned',
+rus: 'прославленный',
+difficulty: 2
+},
+{
+eng: 'unprecedented',
+rus: 'безпрецедентный',
+difficulty: 2
+},
+{
+eng: 'ubiquitous',
+rus: 'вездесущий',
+difficulty: 2
+},
+{
+eng: 'indispensable',
+rus: 'незаменимый',
+difficulty: 2
+},
+{
+eng: 'spontaneous',
+rus: 'спонтанный',
+difficulty: 2
+},
+{
+eng: 'intricate',
+rus: 'сложный',
+difficulty: 2
+},
+{
+eng: 'prolific',
+rus: 'плодовитый',
+difficulty: 2
+},
+{
+eng: 'perplexing',
+rus: 'озадачивающий',
+difficulty: 2
+},
+{
+eng: 'inherent',
+rus: 'присущий',
+difficulty: 2
+},
+{
+eng: 'conducive',
+rus: 'способствующий',
+difficulty: 2
+},
+{
+eng: 'lucrative',
+rus: 'прибыльный',
+difficulty: 2
+},
+{
+eng: 'infallible',
+rus: 'безошибочный',
+difficulty: 2
+},
+{
+eng: 'invaluable',
+rus: 'неоценимый',
+difficulty: 2
+},
+{
+eng: 'conscientious',
+rus: 'добросовестный',
+difficulty: 2
+},
+{
+eng: 'profound',
+rus: 'глубокий',
+difficulty: 2
+},
+{
+eng: 'conspicuous',
+rus: 'заметный',
+difficulty: 2
+},
+{
+eng: 'dubious',
+rus: 'сомнительный',
+difficulty: 2
+},
+{
+eng: 'prosperous',
+rus: 'процветающий',
+difficulty: 2
+},
+{
+eng: 'transient',
+rus: 'мимолетный',
+difficulty: 2
+},
+{
+eng: 'innovative',
+rus: 'инновационный',
+difficulty: 2
+},
+{
+eng: 'cumbersome',
+rus: 'громоздкий',
+difficulty: 2
+},
+{
+eng: 'scrutiny',
+rus: 'изучение',
+difficulty: 2
+},
+{
+eng: 'flourish',
+rus: 'процветать',
+difficulty: 2
+},
+{
+eng: 'tenacious',
+rus: 'упорный',
+difficulty: 2
+},
+{
+eng: 'imperative',
+rus: 'обязательный',
+difficulty: 2
+},
+{
+eng: 'elusive',
+rus: 'неуловимый',
+difficulty: 2
+},
+{
+eng: 'endeavor',
+rus: 'стремление',
+difficulty: 2
+},
+{
+eng: 'profound',
+rus: 'глубокий',
+difficulty: 2
+},
+{
+eng: 'culmination',
+rus: 'крупное событие',
+difficulty: 2
+},
+    ];
+    const words3 = [
+    { eng: 'pisyaaaaaaaaaaaa', rus: 'дом', difficulty: 3 },
+    { eng: 'car', rus: 'машина', difficulty: 3 },
+    {
+eng: 'soporific',
+rus: 'снотворный',
+difficulty: 3
+},
+{
+eng: 'lackadaisical',
+rus: 'небрежный',
+difficulty: 3
+},
+{
+eng: 'quixotic',
+rus: 'несбыточный',
+difficulty: 3
+},
+{
+eng: 'discombobulate',
+rus: 'путать',
+difficulty: 3
+},
+{
+eng: 'sesquipedalian',
+rus: 'длинноногий',
+difficulty: 3
+},
+{
+eng: 'gobbledygook',
+rus: 'чушь',
+difficulty: 3
+},
+{
+eng: 'kerfuffle',
+rus: 'суета',
+difficulty: 3
+},
+{
+eng: 'flummox',
+rus: 'смущать',
+difficulty: 3
+},
+{
+eng: 'brouhaha',
+rus: 'шумиха',
+difficulty: 3
+},
+{
+eng: 'perspicacious',
+rus: 'проницательный',
+difficulty: 3
+},
+{
+eng: 'idiosyncrasy',
+rus: 'особенность',
+difficulty: 3
+},
+{
+eng: 'equanimity',
+rus: 'спокойствие',
+difficulty: 3
+},
+{
+eng: 'facetious',
+rus: 'шутливый',
+difficulty: 3
+},
+{
+eng: 'vicissitude',
+rus: 'перемена',
+difficulty: 3
+},
+{
+eng: 'mnemonic',
+rus: 'мнемонический',
+difficulty: 3
+},
+{
+eng: 'serendipity',
+rus: 'счастливая случайность',
+difficulty: 3
+},
+{
+eng: 'truculent',
+rus: 'воинственный',
+difficulty: 3
+},
+{
+eng: 'lugubrious',
+rus: 'мрачный',
+difficulty: 3
+},
+{
+eng: 'obstreperous',
+rus: 'шумный',
+difficulty: 3
+},
+{
+eng: 'doppelgänger',
+rus: 'двойник',
+difficulty: 3
+},
+{
+eng: 'limerence',
+rus: 'любовная лимеренс',
+difficulty: 3
+},
+{
+eng: 'jejune',
+rus: 'нудный',
+difficulty: 3
+},
+{
+eng: 'zeitgeist',
+rus: 'дух времени',
+difficulty: 3
+},
+{
+eng: 'sesquicentennial',
+rus: 'семисотлетие',
+difficulty: 3
+},
+{
+eng: 'unctuous',
+rus: 'поддельно милый',
+difficulty: 3
+},
+{
+eng: 'lagniappe',
+rus: 'подарок от продавца',
+difficulty: 3
+},
+{
+eng: 'egregious',
+rus: 'вопиющий',
+difficulty: 3
+},
+{
+eng: 'persiflage',
+rus: 'легкомыслие',
+difficulty: 3
+},
+{
+eng: 'obsequious',
+rus: 'покорный',
+difficulty: 3
+},
+{
+eng: 'defenestration',
+rus: 'выбрасывание из окна',
+difficulty: 3
+},
+{
+eng: 'tintinnabulation',
+rus: 'звон',
+difficulty: 3
+},
+{
+eng: 'prestidigitation',
+rus: 'фокусы',
+difficulty: 3
+},
+
+{
+eng: 'onomatopoeia',
+rus: 'звукоподражание',
+difficulty: 3
+},
+{
+eng: 'sesquicentennial',
+rus: 'семисотлетие',
+difficulty: 3
+},
+{
+eng: 'rhinorrhea',
+rus: 'насморк',
+difficulty: 3
+},
+{
+eng: 'triskaidekaphobia',
+rus: 'боязнь числа тринадцать',
+difficulty: 3
+},
+{
+eng: 'odontorrhea',
+rus: 'повышенное слюноотделение',
+difficulty: 3
+},
+{
+eng: 'ichthyophobia',
+rus: 'боязнь рыб',
+difficulty: 3
+},
+{
+eng: 'epistemology',
+rus: 'эпистемология',
+difficulty: 3
+},
+{
+eng: 'sycophant',
+rus: 'льстец',
+difficulty: 3
+},
+{
+eng: 'malfeasance',
+rus: 'проступок',
+difficulty: 3
+},
+{
+eng: 'mellifluous',
+rus: 'сладкозвучный',
+difficulty: 3
+},
+{
+eng: 'sagacious',
+rus: 'прозорливый',
+difficulty: 3
+},
+{
+eng: 'circumlocution',
+rus: 'обходительность',
+difficulty: 3
+},
+{
+eng: 'ubiquitous',
+rus: 'вездесущий',
+difficulty: 3
+},
+{
+eng: 'ludicrous',
+rus: 'смехотворный',
+difficulty: 3
+},
+{
+eng: 'idiosyncrasy',
+rus: 'идиосинкразия',
+difficulty: 3
+},
+{
+eng: 'cognizant',
+rus: 'осведомленный',
+difficulty: 3
+},
+{
+eng: 'exacerbate',
+rus: 'обострять',
+difficulty: 3
+},
+{
+eng: 'precarious',
+rus: 'ненадежный',
+difficulty: 3
+},
+{
+eng: 'venerable',
+rus: 'почтенный',
+difficulty: 3
+},
+{
+eng: 'ostentatious',
+rus: 'показной',
+difficulty: 3
+},
+{
+eng: 'ephemeral',
+rus: 'мимолетный',
+difficulty: 3
+},
+{
+eng: 'deleterious',
+rus: 'вредный',
+difficulty: 3
+},
+{
+eng: 'obfuscate',
+rus: 'затуманивать',
+difficulty: 3
+},
+{
+eng: 'juxtaposition',
+rus: 'параллельное расположение',
+difficulty: 3
+},
+{
+eng: 'equanimity',
+rus: 'хладнокровие',
+difficulty: 3
+},
+{
+eng: 'perpetuity',
+rus: 'вечность',
+difficulty: 3
+},
+{
+eng: 'ubiquity',
+rus: 'вездесущесть',
+difficulty: 3
+},
+{
+eng: 'quintessential',
+rus: 'идеальный',
+difficulty: 3
+},
+{
+eng: 'disseminate',
+rus: 'распространять',
+difficulty: 3
+},
+{
+eng: 'anachronistic',
+rus: 'анахронический',
+difficulty: 3
+},
+{
+eng: 'solipsistic',
+rus: 'солипсистический',
+difficulty: 3
+},
+{
+eng: 'circumlocution',
+rus: 'обходной путь',
+difficulty: 3
+},
+{
+eng: 'indefatigable',
+rus: 'неутомимый',
+difficulty: 3
+},
+{
+eng: 'mendacious',
+rus: 'лживый',
+difficulty: 3
+},
+{
+eng: 'quixotic',
+rus: 'рыцарский',
+difficulty: 3
+},
+{
+eng: 'myopic',
+rus: 'короткозорий',
+difficulty: 3
+},
+{
+eng: 'esoteric',
+rus: 'эзотерический',
+difficulty: 3
+},
+{
+eng: 'onerous',
+rus: 'тяжелый',
+difficulty: 3
+},
+{
+eng: 'pellucid',
+rus: 'прозрачный',
+difficulty: 3
+},
+{
+eng: 'proclivity',
+rus: 'склонность',
+difficulty: 3
+},
+{
+eng: 'pulchritudinous',
+rus: 'красивый',
+difficulty: 3
+},
+{
+eng: 'quagmire',
+rus: 'трясина',
+difficulty: 3
+},
+{
+eng: 'refulgent',
+rus: 'светящийся',
+difficulty: 3
+},
+{
+eng: 'sesquipedalian',
+rus: 'длинношеее',
+difficulty: 3
+},
+{
+eng: 'ubiquitarian',
+rus: 'вездесущий',
+difficulty: 3
+},
+{
+eng: 'vilipend',
+rus: 'упрекать',
+difficulty: 3
+},
+{
+eng: 'vituperative',
+rus: 'ругательный',
+difficulty: 3
+},
+{
+eng: 'fuliginous',
+rus: 'темный',
+difficulty: 3
+},
+{
+eng: 'peregrinate',
+rus: 'путешествовать',
+difficulty: 3
+},
+{
+eng: 'percipient',
+rus: 'понимающий',
+difficulty: 3
+},
+{
+eng: 'vociferous',
+rus: 'крикливый',
+difficulty: 3
+},
+{
+eng: 'lachrymose',
+rus: 'печальный',
+difficulty: 3
+},];
+        let timerValue = 60;
+        let score = 0;
+
+
+        function getWordsByScore(score) {
+        if (score < 150) {
+            return words;
+        } else if (score < 300) {
+            return words2;
+        } else {
+            return words3;
+        }
+
+
+
+    }
+    function startGame() {
+    // Reset values
+    timerValue = 60;
+    score = 0;
+    updateTimer();
+    updateScore();
+    hideResult();
+
+    // Start timer
+    const timerInterval = setInterval(() => {
+        timerValue--;
+        updateTimer();
+
+        if (timerValue <= 0) {
+            clearInterval(timerInterval);
+            showResult();
+            showReturnHomeButton();
+            displayFinalScore(); // Добавлено отображение окончательного счета
+        }
+    }, 1000);
+
+    // Display initial word and options
+    displayWord();
+    displayOptions();
+}
+
+// Добавлена функция для отображения окончательного счета
+function displayFinalScore() {
+    document.getElementById('score').textContent = `Final Score: ${score}`;
+    document.getElementById('difficulty').style.display = 'none'; // Скрыть отображение сложности
+    document.getElementById('options').style.display = 'none'; // Скрыть варианты ответов
+    document.getElementById('word').style.display = 'none'; // Скрыть слово
+}
+
+function updateTimer() {
+    document.getElementById('timer').textContent = timerValue;
+}
+
+function updateScore() {
+    const scoreElement = document.getElementById('score');
+    scoreElement.textContent = `Score: ${score}`;
+    
+    // Определение сложности в зависимости от количества очков
+    let difficulty = 1;
+    if (score >= 300) {
+        difficulty = 3;
+    } else if (score >= 150) {
+        difficulty = 2;
+    }
+    
+    const difficultyElement = document.getElementById('difficulty');
+    difficultyElement.textContent = `Difficulty: ${difficulty}`;
+}
+function hideResult() {
+    document.getElementById('result').style.display = 'none';
+}
+
+function showResult() {
+    document.getElementById('result').style.display = 'block';
+}
+
+function showReturnHomeButton() {
+    document.getElementById('returnHome').style.display = 'block';
+    document.getElementById('returnHome').addEventListener('click', () => {
+        window.location.href = 'index.html'; // Replace with the correct URL of your home page
+    });
+}
+
+function displayWord() {
+    const availableWords = getWordsByScore(score);
+    const randomIndex = Math.floor(Math.random() * availableWords.length);
+    const randomWord = availableWords[randomIndex];
+
+    document.getElementById('word').textContent = randomWord.eng;
+}
+
+function displayOptions() {
+    const availableWords = getWordsByScore(score);
+    const correctOptionIndex = Math.floor(Math.random() * 3);
+    const correctWord = availableWords.find(word => word.eng === document.getElementById('word').textContent);
+    const options = [];
+
+    for (let i = 0; i < 3; i++) {
+        const optionWord = (i === correctOptionIndex) ? correctWord.rus : getRandomWord(getWordsByScore(score)).rus;
+        options.push(optionWord);
+    }
+
+    // Shuffle options to randomize their order
+    options.sort(() => Math.random() - 0.5);
+
+    const optionsContainer = document.getElementById('options');
+    optionsContainer.innerHTML = ''; // Clear previous options
+
+    options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.classList.add('option');
+        optionElement.textContent = option;
+        optionElement.addEventListener('click', () => checkAnswer(option === correctWord.rus));
+        optionsContainer.appendChild(optionElement);
+    });
+}
+
+function getRandomWord(wordList) {
+    const randomIndex = Math.floor(Math.random() * wordList.length);
+    return wordList[randomIndex];
+}
+
+function checkAnswer(isCorrect) {
+    console.log("Is answer correct?", isCorrect); // Debugging output
+    if (isCorrect) {
+        score += 10;
+    }
+    else {score = score - 5;
+    
+    }
+    {
+            updateScore();
+    }
+
+    displayWord();
+    displayOptions();
+}
+
+
+document.getElementById('returnHome').addEventListener('click', () => {
+    window.location.href = 'index.html'; // Replace with the correct URL of your home page
+});
+
+// Start the game when the page loads
+startGame();
+    </script>
+</body>
+</html>
+>>>>>>> 8c2d137fbbe93cbc1664d85bfeefe042683e37cf
