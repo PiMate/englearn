@@ -35,6 +35,49 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: left; /* Выравниваем кнопки по центру */
+            gap: 20px;
+            width: 100%;
+        }
+        .button {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px 30px;
+            border: 2px solid #e0e0e0; /* Цвет рамки кнопок */
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            text-align: center;
+            background-color: transparent; /* Прозрачный фон кнопок */
+            color: #e0e0e0;
+            width: 100%;
+            max-width: 150px;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            background-color: #e0e0e0; /* Цвет фона кнопок при наведении */
+            color: #282828; /* Цвет текста кнопок при наведении */
+        }
+
+
+        .text {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .deftext {
+            font-size: 20px;
+            font-weight: normal;
+            margin-top: 20px;
+
+        }
+
+
+
     </style>
 </head>
 <body>
@@ -42,6 +85,7 @@
         Доп. информация
     </div>
     <div class="container" style="text-align: left;">
+        <div class="deftext">
         💎Сайт находится в разработке💎<br>
         📌Если есть идеи -- >>  t.me/kitsoe
         <br>
@@ -80,7 +124,9 @@
         _______█▒███▒▒▒█████<br>
         _____█▒████▒▒▒▒████<br>
         ______█▒███▒██████__<br>
-
+        </div>
+        <div class="button-container">
+            <a href="index.html" class="button">На главную</a>
 
     </div>
 </body>

@@ -35,6 +35,51 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: left; /* Выравниваем кнопки по центру */
+            gap: 20px;
+            width: 100%;
+        }
+        .button {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px 30px;
+            border: 2px solid #e0e0e0; /* Цвет рамки кнопок */
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            text-align: center;
+            background-color: transparent; /* Прозрачный фон кнопок */
+            color: #e0e0e0;
+            width: 100%;
+            max-width: 150px;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            background-color: #e0e0e0; /* Цвет фона кнопок при наведении */
+            color: #282828; /* Цвет текста кнопок при наведении */
+        }
+
+
+
+        .text {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .deftext {
+            font-size: 20px;
+            font-weight: normal;
+            margin-top: 20px;
+            text-align: justify;
+
+        }
+
+
+
     </style>
 </head>
 <body>
@@ -42,7 +87,38 @@
         Материалы для изучения
     </div>
     <div class="container" style="text-align: left;">
-    Сюда нужно дописать
+        <div class="text">
+            📌 Игра Speedy
+        </div>
+        <div class="deftext">
+            📌Игра сделана, с целью закрепления или повторения изученного материала, 
+            опираясь на главы 9a и 2a("Еда") в учебниках по английскому языку "Spotlight" за 7 и 8 класс. <br>
+            Для ознакомления учебники можно найти в открытом доступе по ссылке (Гугл диск): <br>
+
+            
+        </div>
+        <div class="button-container">
+            <a href="https://drive.google.com/drive/folders/1ruweODLFihx00wTsDSF2jNTEiEQS2si6" class="button">Учебник</a>
+        </div>
+        <div class="button-container">
+            <a href="speedy_page.html" class="button">Игра "Speedy"</a>
+        </div>
+        <div class="text">
+            📌 Игра Choosy
+        </div>
+        <div class="deftext">
+            📌Игра сделана, с целью закрепления или повторения изученного материала, 
+            опираясь на изучение времён в английском языке в курсе школьной программы<br>("Past Simple | Past Cont"). <br>
+        </div>
+        <div class="button-container">
+            <a href="game_2.html" class="button">Игра "Choosy"</a>
+        </div>
+        <div class="text">
+            ==========================
+        </div>
+        <div class="button-container">
+            <a href="index.html" class="button">На главную</a>
+        </div>
     </div>
 </body>
 </html>

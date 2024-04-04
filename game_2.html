@@ -69,7 +69,11 @@
             background-color: #e0e0e0; /* Цвет фона кнопок при наведении */
             color: #282828; /* Цвет текста кнопок при наведении */
         }
-
+        .deftext {
+            font-size: 24px;
+            font-weight: normal;
+            margin-bottom: 20px;
+        }
         .app-container {
             margin-bottom: 20px;
         }
@@ -104,13 +108,12 @@
             font-size: 24px;
             font-weight: bold;
             margin-bottom: 20px;
-            display: none; /* Начально таймер скрыт */
         }
         .score {
             font-size: 24px;
-            font-weight: bold;
+            font-weight: normal;
             margin-bottom: 20px;
-            display: none; /* Начально таймер скрыт */
+
         }
     </style>
 </head>
@@ -119,18 +122,31 @@
         English Learning
     </div>
     <div class="container">
-        <div class="title">Вставьте пропуск</div>
+        <div class="timer">📌Вставьте пропуск</div>
         <div class="button-container">
-            <button id="startButton" class="button" onclick="startGame()">Start</button>
+            <button id="startButton" class="button" onclick="startGame()">Начать</button>
         </div>
-        <div class="timer" id="timer"></div>
-        <div class="score" id="score" style="display: none;"></div>
+        <div class="timer" id="timer">
+        </div>
+        <div class="score" id="score" style="display: none;">
+        </div>
+    </div>
+    <div class="container" style="margin-top: 40px">
+        <div class="timer">📌Текущая тематика: времена.<br>( Past Simple | Past Continuous)</div>
+        <div class="deftext" style="text-align: center;">
+            Для освоения или повторения материала 
+            рекомендуем перейти по кнопке ниже
+        </div>
+            <div class="button-container">
+                <a href="mat.html" class="button">Перейти</a>
+            </div>
+        </div>
     </div>
 
     <script>
         let score = 0;
         let appsQueue = [];
-        let timerValue = 60;
+        let timerValue = 180;
         let timerInterval;
 
         function startGame() {
@@ -140,115 +156,66 @@
             document.getElementById('startButton').style.display = 'none'; // Прячем кнопку "Start"
             document.querySelector('.timer').style.display = 'block'; // Показываем таймер при старте игры
             document.querySelector('.score').style.display = 'block'; // Показываем счетчик очков
-            startTimer();
-        }
+            startTimer(); // Запускаем таймер
+}
+
 
         function generateApps() {
             const apps = [
-                { question: 'The cat is ___ the table.', answer: 'on', incorrect: ['in', 'at', 'under'] },
-                { question: 'She goes to school ___ foot.', answer: 'on', incorrect: ['by', 'with', 'at'] },
-                { question: 'The book is ___ the table.', answer: 'on', incorrect: ['in', 'at', 'under'] },
-                { question: 'She goes to the gym ___ the morning.', answer: 'in', incorrect: ['on', 'at', 'during'] },
-                { question: 'We usually have dinner ___ 7:00 PM.', answer: 'at', incorrect: ['in', 'on', 'during'] },
-                { question: 'The cat is ___ the table.', answer: 'on', incorrect: ['in', 'at', 'under', 'over'] },
-                { question: 'She lives ___ a small town.', answer: 'in', incorrect: ['on', 'at', 'under', 'by'] },
-                { question: 'The keys are ___ the drawer.', answer: 'in', incorrect: ['on', 'at', 'under', 'beside'] },
-                { question: 'He jumped ___ the pool.', answer: 'into', incorrect: ['onto', 'in', 'under', 'toward'] },
-                { question: 'They arrived ___ the airport early.', answer: 'at', incorrect: ['on', 'in', 'to', 'near'] },
-                { question: 'The book is ___ the shelf.', answer: 'on', incorrect: ['in', 'at', 'under', 'above'] },
-                { question: 'We are ___ the cinema now.', answer: 'at', incorrect: ['in', 'on', 'under', 'across'] },
-                { question: 'The dog is ___ the bed.', answer: 'on', incorrect: ['in', 'at', 'under', 'near'] },
-                { question: 'They are waiting ___ the bus stop.', answer: 'at', incorrect: ['on', 'in', 'under', 'beside'] },
-                { question: 'The restaurant is ___ the corner.', answer: 'around', incorrect: ['on', 'at', 'under', 'by'] },
-                { question: 'The ball rolled ___ the hill.', answer: 'down', incorrect: ['up', 'on', 'under', 'over'] },
-                { question: 'She is standing ___ the door.', answer: 'by', incorrect: ['near', 'at', 'under', 'across'] },
-                { question: 'The plane is ___ the sky.', answer: 'in', incorrect: ['on', 'at', 'under', 'over'] },
-                { question: 'They went ___ the bridge.', answer: 'over', incorrect: ['under', 'on', 'through', 'into'] },
-                { question: 'I saw him ___ the street.', answer: 'across', incorrect: ['through', 'on', 'under', 'near'] },
-                { question: 'She put her bag ___ the chair.', answer: 'on', incorrect: ['in', 'at', 'under', 'beside'] },
-                { question: 'The cat is ___ the tree.', answer: 'in', incorrect: ['on', 'at', 'under', 'near'] },
-                { question: 'The store is ___ the mall.', answer: 'in', incorrect: ['on', 'at', 'under', 'beside'] },
-                { question: 'The spider crawled ___ the bed.', answer: 'under', incorrect: ['in', 'on', 'at', 'above'] },
-                { question: 'We walked ___ the park.', answer: 'through', incorrect: ['on', 'in', 'at', 'across'] },
-                { question: 'The ball is ___ the box.', answer: 'in', incorrect: ['on', 'at', 'under', 'beside'] },
-    { question: 'He is ___ the hospital.', answer: 'at', incorrect: ['in', 'on', 'under', 'above'] },
-    { question: 'She arrived ___ the station.', answer: 'at', incorrect: ['in', 'on', 'under', 'near'] },
-    { question: 'The bird is ___ the cage.', answer: 'in', incorrect: ['on', 'at', 'under', 'beside'] },
-    { question: 'He parked ___ the garage.', answer: 'in', incorrect: ['on', 'at', 'under', 'beside'] },
-    { question: 'The cup is ___ the table.', answer: 'on', incorrect: ['in', 'at', 'under', 'beside'] },
-    { question: 'They are ___ the airport.', answer: 'at', incorrect: ['in', 'on', 'under', 'near'] },
-    { question: 'She is ___ the library.', answer: 'at', incorrect: ['in', 'on', 'under', 'beside'] },
-    { question: 'We arrived ___ the party.', answer: 'at', incorrect: ['in', 'on', 'under', 'beside'] },
-    { question: 'The plane is flying ___ the clouds.', answer: 'above', incorrect: ['over', 'in', 'under', 'beside'] },
-    { question: 'The bird is ___ the sky.', answer: 'in', incorrect: ['on', 'at', 'under', 'beside'] },
-    { question: 'He is ___ the beach.', answer: 'at', incorrect: ['in', 'on', 'under', 'beside'] },
-    { question: 'She is ___ the river.', answer: 'by', incorrect: ['near', 'at', 'under', 'beside'] },
-    { question: 'They walked ___ the forest.', answer: 'through', incorrect: ['on', 'in', 'under', 'beside'] },
-    { question: 'The cat is ___ the window.', answer: 'by', incorrect: ['near', 'at', 'under', 'beside'] },
-    { question: 'She sat ___ the chair.', answer: 'on', incorrect: ['in', 'at', 'under', 'beside'] },
-    { question: 'The keys are ___ the bag.', answer: 'in', incorrect: ['on', 'at', 'under', 'beside'] },
-    { question: 'He is ___ the bed.', answer: 'on', incorrect: ['in', 'at', 'under', 'beside'] },
-    { question: 'They are ___ the school.', answer: 'at', incorrect: ['in', 'on', 'under', 'beside'] },
-    { question: 'She is ___ the cafe.', answer: 'at', incorrect: ['in', 'on', 'under', 'beside'] },
-    { question: 'We walked ___ the mountain.', answer: 'up', incorrect: ['down', 'on', 'under', 'beside'] },
-    { question: 'The plane is ___ the runway.', answer: 'on', incorrect: ['in', 'at', 'under', 'beside'] },
-    { question: 'The cat is ___ the chair.', answer: 'under', incorrect: ['in', 'on', 'at', 'beside'] },
-    { question: 'She is ___ the park.', answer: 'in', incorrect: ['on', 'at', 'under', 'beside'] },
-    { question: 'He sat ___ the table.', answer: 'at', incorrect: ['in', 'on', 'under', 'beside'] },
-    { question: 'The phone is ___ the table.', answer: 'on', incorrect: ['in', 'at', 'under', 'beside'] },
-    { question: 'They are ___ the forest.', answer: 'in', incorrect: ['on', 'at', 'under', 'beside'] },
-    { question: 'She is ___ the car.', answer: 'in', incorrect: ['on', 'at', 'under', 'beside'] },
-    { question: 'He is ___ the mountain.', answer: 'on', incorrect: ['in', 'at', 'under', 'beside'] },
-    { question: 'We are ___ the store.', answer: 'at', incorrect: ['in', 'on', 'under', 'beside'] },
-    { question: "They have been ___ the museum since morning.", answer: "at", incorrect: ["in", "on", "under", "near"] },
-    { question: "She had been waiting ___ him for hours before he finally arrived.", answer: "for", incorrect: ["at", "in", "on", "beside"] },
-    { question: "After finishing her homework, she went ___ bed.", answer: "to", incorrect: ["at", "in", "on", "under"] },
-    { question: "We will be ___ the concert tomorrow night.", answer: "at", incorrect: ["in", "on", "under", "beside"] },
-    { question: "He is going ___ the movie theater with his friends tonight.", answer: "to", incorrect: ["at", "in", "on", "under"] },
-    { question: "Before going to work, he stopped ___ the coffee shop for a cup of coffee.", answer: "at", incorrect: ["in", "on", "under", "beside"] },
-    { question: "They had been traveling ___ Europe for two weeks before returning home.", answer: "around", incorrect: ["through", "on", "under", "beside"] },
-    { question: "She will have finished her project ___ the deadline.", answer: "by", incorrect: ["at", "in", "on", "under"] },
-    { question: "By the time they arrived, the party had already started ___ an hour.", answer: "for", incorrect: ["at", "in", "on", "beside"] },
-    { question: "While waiting ___ the bus, she met an old friend.", answer: "for", incorrect: ["at", "in", "on", "beside"] },
-    { question: "The children were playing ___ the yard when it started raining.", answer: "in", incorrect: ["on", "at", "under", "beside"] },
-    { question: "He was supposed to meet her ___ the corner of the street, but she didn't show up.", answer: "at", incorrect: ["in", "on", "under", "beside"] },
-    { question: "After dinner, they went ___ a walk in the park.", answer: "for", incorrect: ["at", "in", "on", "under"] },
-    { question: "We have been living ___ this neighborhood for over ten years.", answer: "in", incorrect: ["on", "at", "under", "beside"] },
-    { question: "She will be traveling ___ business next week.", answer: "for", incorrect: ["at", "in", "on", "under"] },
-    { question: "Before the storm hit, they had already arrived ___ the safety of their home.", answer: "at", incorrect: ["in", "on", "under", "beside"] },
-    { question: "He usually goes ___ a run in the morning before work.", answer: "for", incorrect: ["at", "in", "on", "under"] },
-    { question: "We had been planning the trip ___ months before we finally went.", answer: "for", incorrect: ["at", "in", "on", "under"] },
-    { question: "She will be studying ___ the library all day tomorrow.", answer: "at", incorrect: ["in", "on", "under", "beside"] },
-    { question: "They were sitting ___ the bench in the park when they saw a shooting star.", answer: "on", incorrect: ["in", "at", "under", "beside"] },
-    { question: 'She ___ a book when I arrived.', answer: 'was reading', incorrect: ['is reading', 'read', 'reads', 'reading'] },
-    { question: 'They ___ dinner when the phone rang.', answer: 'were having', incorrect: ['have', 'had', 'having', 'are having'] },
-    { question: 'He ___ to school yesterday.', answer: 'went', incorrect: ['goes', 'going', 'go', 'was going'] },
-    { question: 'We ___ for hours before the concert started.', answer: 'had been waiting', incorrect: ['have been waiting', 'waiting', 'waited', 'are waiting'] },
-    { question: 'The cat ___ under the table.', answer: 'is', incorrect: ['was', 'are', 'be', 'been'] },
-    { question: 'I ___ to the store tomorrow.', answer: 'will go', incorrect: ['go', 'going', 'goes', 'went'] },
-    { question: 'They ___ to Paris next month.', answer: 'are traveling', incorrect: ['travel', 'travels', 'traveling', 'traveled'] },
-    { question: 'She ___ her homework before going to bed.', answer: 'did', incorrect: ['do', 'does', 'done', 'doing'] },
-    { question: 'He ___ his lunch in the cafeteria yesterday.', answer: 'ate', incorrect: ['eat', 'eats', 'eating', 'eaten'] },
-    { question: 'The sun ___ brightly in the sky.', answer: 'shines', incorrect: ['shone', 'shine', 'shining', 'shone'] },
-    { question: 'We ___ to the movies tonight.', answer: 'are going', incorrect: ['go', 'going', 'went', 'gone'] },
-    { question: 'The children ___ happily in the playground.', answer: 'are playing', incorrect: ['play', 'playing', 'played', 'plays'] },
-    { question: 'She ___ to the gym three times a week.', answer: 'goes', incorrect: ['go', 'going', 'went', 'gone'] },
-    { question: 'They ___ in the park when it started raining.', answer: 'were walking', incorrect: ['walk', 'walking', 'walked', 'walks'] },
-    { question: 'He ___ to the party last night.', answer: 'went', incorrect: ['go', 'going', 'goes', 'was going'] },
-    { question: 'We ___ for the bus when it arrived.', answer: 'were waiting', incorrect: ['wait', 'waiting', 'waited', 'have been waiting'] },
-    { question: 'She ___ a new car last week.', answer: 'bought', incorrect: ['buy', 'buys', 'buying', 'boughten'] },
-    { question: 'They ___ a movie yesterday evening.', answer: 'watched', incorrect: ['watch', 'watches', 'watching', 'have watched'] },
-    { question: 'He ___ late for work yesterday.', answer: 'was', incorrect: ['is', 'are', 'be', 'been'] },
-    { question: 'We ___ dinner at 7 o\'clock last night.', answer: 'had', incorrect: ['have', 'having', 'had been', 'have been'] },
-    { question: 'She ___ in the garden all morning.', answer: 'has been working', incorrect: ['working', 'works', 'work', 'worked'] },
-    { question: 'They ___ to visit us next weekend.', answer: 'are coming', incorrect: ['come', 'coming', 'came', 'comes'] },
-    { question: 'The students ___ their exams tomorrow.', answer: 'will take', incorrect: ['take', 'taking', 'took', 'taken'] },
-    { question: 'I ___ my keys this morning.', answer: 'lost', incorrect: ['lose', 'losing', 'loses', 'have lost'] },
-    { question: 'He ___ up early every day.', answer: 'gets', incorrect: ['get', 'getting', 'got', 'gotten'] },
-    { question: 'She ___ her lunch at the office every day.', answer: 'eats', incorrect: ['eat', 'eating', 'ate', 'eaten'] },
-                // Add more apps here
-            ];
-
+            { question: 'He ___ (go) to the store yesterday.', answer: 'went', incorrect: ['goes', 'go', 'going'] },
+        { question: 'She ___ (eat) dinner at 7 PM last night.', answer: 'ate', incorrect: ['eats', 'eat', 'eating'] },
+        { question: 'They ___ (watch) a movie on Friday.', answer: 'watched', incorrect: ['watches', 'watch', 'watching'] },
+        { question: 'I ___ (see) him yesterday at the party.', answer: 'saw', incorrect: ['see', 'seen', 'seeing'] },
+        { question: 'She ___ (read) a book last weekend.', answer: 'read', incorrect: ['reads', 'reading', 'readed'] },
+        { question: 'He ___ (play) football with his friends yesterday.', answer: 'played', incorrect: ['plays', 'playing', 'play'] },
+        { question: 'He ___ (watch) TV when the phone rang.', answer: 'was watching', incorrect: ['watched', 'watches', 'was watch'] },
+{ question: 'She ___ (not, sleep) when you called her.', answer: 'was not sleeping', incorrect: ['did not sleep', 'was not sleep', 'sleep not'] },
+{ question: 'I ___ (play) football with my friends yesterday.', answer: 'played', incorrect: ['play', 'plays', 'was playing'] },
+{ question: 'We ___ (have) dinner when the lights went out.', answer: 'were having', incorrect: ['had', 'have', 'was having'] },
+{ question: 'They ___ (study) for the exam all night.', answer: 'studied', incorrect: ['study', 'studies', 'was studying'] },
+{ question: 'She ___ (cook) dinner while he ___ (work) in the garden.', answer: 'was cooking / was working', incorrect: ['cooks / works', 'cooked / works', 'was cooked / works'] },
+{ question: 'He ___ (read) a book while she ___ (watch) TV.', answer: 'was reading / was watching', incorrect: ['reads / watches', 'read / watches', 'was read / was watching'] },
+{ question: 'They ___ (swim) in the pool when it started raining.', answer: 'were swimming', incorrect: ['swam', 'swim', 'was swimming'] },
+{ question: 'He ___ (read) a book when the phone rang.', answer: 'was reading', incorrect: ['read', 'reads', 'was read'] },
+{ question: 'She ___ (cook) dinner while her husband ___ (watch) TV.', answer: 'was cooking / was watching', incorrect: ['cooks / watches', 'cooked / watches', 'was cooked / watched'] },
+{ question: 'They ___ (walk) in the park when it started raining.', answer: 'were walking', incorrect: ['walked', 'walks', 'was walking'] },
+{ question: 'I ___ (study) Spanish last year.', answer: 'studied', incorrect: ['study', 'studies', 'was studying'] },
+{ question: 'She ___ (play) the piano while he ___ (read) a book.', answer: 'was playing / was reading', incorrect: ['plays / reads', 'played / reads', 'was played / was reading'] },
+{ question: 'He ___ (fix) his car yesterday.', answer: 'fixed', incorrect: ['fixes', 'fix', 'was fixing'] },
+{ question: 'We ___ (have) breakfast when the earthquake happened.', answer: 'were having', incorrect: ['had', 'have', 'was having'] },
+{ question: 'She ___ (dance) at the party last night.', answer: 'danced', incorrect: ['dance', 'dances', 'was dancing'] },
+{ question: 'He ___ (play) football when he broke his leg.', answer: 'was playing', incorrect: ['played', 'plays', 'was play'] },
+{ question: 'She ___ (not, sleep) when the phone rang.', answer: 'was not sleeping', incorrect: ['did not sleep', 'was not sleep', 'sleep not'] },
+{ question: 'I ___ (not, go) to the party because I had to study.', answer: 'did not go', incorrect: ['did not went', 'did not goes', 'was not go'] },
+{ question: 'They ___ (not, watch) TV when the power went out.', answer: 'were not watching', incorrect: ['did not watch', 'was not watching', 'not were watching'] },
+{ question: 'We ___ (eat) lunch at 1 PM yesterday.', answer: 'ate', incorrect: ['eat', 'eats', 'was eating'] },
+{ question: 'She ___ (work) at the hospital for ten years before she retired.', answer: 'worked', incorrect: ['work', 'works', 'was working'] },
+{ question: 'He ___ (not, finish) his homework when his friend came over.', answer: 'had not finished', incorrect: ['did not finish', 'had not finish', 'was not finish'] },
+{ question: 'They ___ (not, swim) in the ocean because it was too cold.', answer: 'did not swim', incorrect: ['did not swam', 'did not swims', 'were not swim'] },
+{ question: 'She ___ (clean) the house when her parents arrived.', answer: 'was cleaning', incorrect: ['cleaned', 'cleans', 'was clean'] },
+{ question: 'I ___ (read) a book while I waited for the train.', answer: 'was reading', incorrect: ['read', 'reads', 'was read'] },
+{ question: 'He ___ (drive) to work when he got a flat tire.', answer: 'was driving', incorrect: ['drove', 'drives', 'was drive'] },
+{ question: 'She ___ (not, feel) well yesterday.', answer: 'did not feel', incorrect: ['did not felt', 'did not feels', 'was not feel'] },
+{ question: 'They ___ (live) in France for five years before they moved back.', answer: 'had lived', incorrect: ['lived', 'live', 'had live'] },
+{ question: 'We ___ (not, see) each other for years before we met again.', answer: 'had not seen', incorrect: ['did not see', 'had not saw', 'were not see'] },
+{ question: 'He ___ (play) video games all day yesterday.', answer: 'played', incorrect: ['play', 'plays', 'was playing'] },
+{ question: 'She ___ (watch) TV when the doorbell rang.', answer: 'was watching', incorrect: ['watched', 'watches', 'was watch'] },
+{ question: 'I ___ (wait) for the bus when it started raining.', answer: 'was waiting', incorrect: ['waited', 'waits', 'was wait'] },
+{ question: 'They ___ (have) breakfast when he called them.', answer: 'were having', incorrect: ['had', 'have', 'was having'] },
+{ question: 'She ___ (not, go) to the party because she was sick.', answer: 'did not go', incorrect: ['did not went', 'did not goes', 'was not go'] },
+{ question: 'He ___ (paint) the house when it started to rain.', answer: 'was painting', incorrect: ['painted', 'paints', 'was paint'] },
+{ question: 'They ___ (visit) their grandparents every summer when they were kids.', answer: 'visited', incorrect: ['visit', 'visits', 'was visiting'] },
+{ question: 'She ___ (write) a letter while he ___ (read) a book.', answer: 'was writing / was reading', incorrect: ['writes / reads', 'wrote / reads', 'was wrote / was reading'] },
+{ question: 'He ___ (not, study) for the test, so he failed.', answer: 'did not study', incorrect: ['did not studied', 'did not studies', 'was not study'] },
+{ question: 'We ___ (not, know) each other before we met at the party.', answer: 'did not know', incorrect: ['did not knew', 'did not knows', 'was not know'] },
+{ question: 'She ___ (swim) in the pool when her friends arrived.', answer: 'was swimming', incorrect: ['swam', 'swims', 'was swim'] },
+{ question: 'He ___ (not, play) the guitar when she called him.', answer: 'was not playing', incorrect: ['did not play', 'was not play', 'not was playing'] },
+{ question: 'They ___ (not, dance) at the wedding because they were tired.', answer: 'did not dance', incorrect: ['did not danced', 'did not dances', 'not did dance'] },
+{ question: 'She ___ (not, listen) to music when she studied.', answer: 'was not listening', incorrect: ['did not listen', 'was not listen', 'not was listening'] },
+{ question: 'He ___ (not, work) last weekend because it was a holiday.', answer: 'did not work', incorrect: ['did not worked', 'did not works', 'was not work'] },
+{ question: 'They ___ (not, have) dinner when the restaurant closed.', answer: 'did not have', incorrect: ['did not had', 'did not has', 'not did have'] },
+{ question: 'She ___ (not, read) a book when she fell asleep.', answer: 'was not reading', incorrect: ['did not read', 'was not read', 'not was reading'] },
+{ question: 'I ___ (not, play) basketball yesterday because it was raining.', answer: 'did not play', incorrect: ['did not played', 'did not plays', 'not did play'] },       ]
             return apps;
         }
 
@@ -295,34 +262,37 @@
                 score -= 5;
             }
 
-            document.getElementById('score').textContent = `Score: ${score}`;
+            document.getElementById('score').textContent = `Очки: ${score}`;
 
             appContainer.parentNode.removeChild(appContainer);
             displayNextApp();
         }
 
         function startTimer() {
-            timerInterval = setInterval(() => {
-                timerValue--;
-                document.getElementById('timer').textContent = `Time left: ${timerValue} seconds`;
+    timerValue = 180; // Устанавливаем начальное значение таймера в секундах
+    document.getElementById('timer').textContent = `Таймер: ${timerValue} секунд`; // Обновляем отображение таймера
 
-                if (timerValue <= 0) {
-                    clearInterval(timerInterval);
-                    endGame();
-                }
-            }, 1000);
-        }
+    timerInterval = setInterval(() => {
+        timerValue--; // Уменьшаем значение таймера на 1 секунду
+        document.getElementById('timer').textContent = `Таймер: ${timerValue} секунд`; // Обновляем отображение таймера
 
-        function endGame() {
-            const container = document.querySelector('.container');
-            container.innerHTML = `
-                <div class="title">Game Over</div>
-                <div class="button-container">
-                    <button class="button" onclick="window.location.href = 'index.html';">Back to Home</button>
-                </div>
-                <div class="score" style="margin-top: 20px;">Final Score: ${score}</div>
-            `;
+        if (timerValue <= 0) {
+            clearInterval(timerInterval);
+            endGame();
         }
+    }, 1000);
+}
+function endGame() {
+    const container = document.querySelector('.container');
+    container.innerHTML = `
+        <div class="title">Game Over</div>
+        <div class="button-container">
+            <button class="button" onclick="window.location.href = 'index.html';">На главную</button>
+        </div>
+        <div class="score" style="margin-top: 20px;">Собрано очков: ${score}</div>
+    `;
+}
+
     </script>
 </body>
 </html>

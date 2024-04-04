@@ -41,6 +41,21 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+        .container2 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 60px); /* Учитываем высоту хедера */
+            padding: 20px;
+            margin-top: 60px; /* Учитываем высоту хедера */
+            max-width: 400px;
+            max-height: 250px;
+            margin: 40px auto 0;
+            background-color: rgba(40, 40, 40, 0.9); /* Цвет фона контейнера с прозрачностью */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
         .timer {
             font-size: 24px;
@@ -79,10 +94,14 @@
 
         .score {
             font-size: 24px;
-            font-weight: bold;
+            font-weight: normal;
             margin-top: 20px;
         }
-
+        .deftext {
+            font-size: 24px;
+            font-weight: normal;
+            margin-bottom: 20px;
+        }
         .result {
             font-size: 36px;
             font-weight: bold;
@@ -106,6 +125,30 @@
             background-color: #121212; /* Цвет фона кнопки при наведении */
             color: #fff; /* Цвет текста кнопки при наведении */
         }
+        .button-container2 {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Выравниваем кнопки по центру */
+            width: 100%;
+        }
+        .button {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px 30px;
+            border: 2px solid #e0e0e0; /* Цвет рамки кнопок */
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            text-align: center;
+            background-color: transparent; /* Прозрачный фон кнопок */
+            color: #e0e0e0;
+            width: 100%;
+            max-width: 150px;
+        }
+        .button:hover {
+            background-color: #e0e0e0; /* Цвет фона кнопок при наведении */
+            color: #282828; /* Цвет текста кнопок при наведении */
+        }
     </style>
 </head>
 <body>
@@ -113,851 +156,449 @@
         Speedy Game
     </div>
     <div class="container">
-        <div class="timer">Timer: <span id="timer">60</span> seconds</div>
+        <div class="timer">📌Таймер: <span id="timer">60</span> секунд</div>
         <div class="word" id="word">Loading...</div>
         <div class="options" id="options">
             <!-- Options will be dynamically populated using JavaScript -->
         </div>
-        <div class="score" id="score">Score: 0</div>
-        <div class="score" id="difficulty">Difficulty: 1</div>
+        <div class="score" id="score">Очки: 0</div>
+        <div class="score" id="difficulty">Сложность: 1</div>
         <div class="result" id="result">Game Over</div>
         <button id="returnHome" style="display: none;">Return to Home Page</button>
     </div>
+    <div class="container2">
+        <div class="timer">
+            📌Текущая тематика: еда.
+        </div>
+        <div class="deftext" style="text-align: center;">
+            Для освоения или повторения материала 
+            рекомендуем перейти по кнопке ниже
+        </div>
+            <div class="button-container2">
+                <a href="mat.html" class="button">Перейти</a>
+            </div>
+        </div>
+    </div>
+
+
+
+
 
     <script>
         // Dummy data for demonstration purposes
         const words = [
-            { eng: 'apple', rus: 'яблоко', difficulty: 1  },
-            { eng: 'orange', rus: 'апельсин', difficulty: 1  },
-            { eng: 'cat', rus: 'кот', difficulty: 1  },
-            { eng: 'dog', rus: 'собака', difficulty: 1  },
-            { eng: 'house', rus: 'дом', difficulty: 1  },
-            { eng: 'car', rus: 'машина', difficulty: 1  },
-            { eng: 'tree', rus: 'дерево', difficulty: 1  },
-            { eng: 'flower', rus: 'цветок', difficulty: 1  },
-            { eng: 'book', rus: 'книга', difficulty: 1  },
-            { eng: 'computer', rus: 'компьютер' },
-    { eng: 'table', rus: 'стол', difficulty: 1  },
-    { eng: 'chair', rus: 'стул', difficulty: 1  },
-    { eng: 'pen', rus: 'ручка', difficulty: 1  },
-    { eng: 'pencil', rus: 'карандаш', difficulty: 1  },
-    { eng: 'phone', rus: 'телефон', difficulty: 1  },
-    { eng: 'lamp', rus: 'лампа', difficulty: 1  },
-    { eng: 'window', rus: 'окно', difficulty: 1  },
-    { eng: 'door', rus: 'дверь', difficulty: 1  },
-    { eng: 'sky', rus: 'небо', difficulty: 1  },
-    { eng: 'sun', rus: 'солнце', difficulty: 1  },
-    { eng: 'moon', rus: 'луна', difficulty: 1  },
-    { eng: 'star', rus: 'звезда', difficulty: 1  },
-    { eng: 'cloud', rus: 'облако', difficulty: 1  },
-    { eng: 'rain', rus: 'дождь', difficulty: 1  },
-    { eng: 'snow', rus: 'снег', difficulty: 1  },
-    { eng: 'ice', rus: 'лёд', difficulty: 1  },
-    { eng: 'fire', rus: 'огонь', difficulty: 1  },
-    { eng: 'water', rus: 'вода', difficulty: 1  },
-    { eng: 'earth', rus: 'земля', difficulty: 1  },
-    { eng: 'air', rus: 'воздух', difficulty: 1  },
-    { eng: 'mountain', rus: 'гора', difficulty: 1  },
-    { eng: 'river', rus: 'река', difficulty: 1  },
-    { eng: 'lake', rus: 'озеро', difficulty: 1  },
-    { eng: 'ocean', rus: 'океан', difficulty: 1  },
-    { eng: 'sea', rus: 'море', difficulty: 1  },
-    { eng: 'beach', rus: 'пляж', difficulty: 1  },
-    { eng: 'forest', rus: 'лес', difficulty: 1  },
-    { eng: 'bird', rus: 'птица', difficulty: 1  },
-    { eng: 'fish', rus: 'рыба', difficulty: 1  },
-    { eng: 'cat', rus: 'кот', difficulty: 1  },
-    { eng: 'mouse', rus: 'мышь', difficulty: 1  },
-    { eng: 'snake', rus: 'змея', difficulty: 1  },
-    { eng: 'lion', rus: 'лев', difficulty: 1  },
-    { eng: 'tiger', rus: 'тигр', difficulty: 1  },
-    { eng: 'elephant', rus: 'слон', difficulty: 1  },
-    { eng: 'monkey', rus: 'обезьяна', difficulty: 1  },
-    { eng: 'horse', rus: 'лошадь', difficulty: 1  },
-    { eng: 'cow', rus: 'корова', difficulty: 1  },
-    { eng: 'pig', rus: 'свинья', difficulty: 1  },
-    { eng: 'chicken', rus: 'курица', difficulty: 1  },
-    { eng: 'egg', rus: 'яйцо', difficulty: 1  },
-    { eng: 'bread', rus: 'хлеб', difficulty: 1  },
-    { eng: 'cheese', rus: 'сыр', difficulty: 1  },
-    { eng: 'milk', rus: 'молоко', difficulty: 1  },
-    { eng: 'butter', rus: 'масло', difficulty: 1  },
-    { eng: 'juice', rus: 'сок', difficulty: 1  },
-    { eng: 'coffee', rus: 'кофе', difficulty: 1  },
-    { eng: 'tea', rus: 'чай', difficulty: 1  },
-    { eng: 'sugar', rus: 'сахар', difficulty: 1  },
-    { eng: 'salt', rus: 'соль', difficulty: 1  },
-    { eng: 'pepper', rus: 'перец', difficulty: 1  },
-    { eng: 'knife', rus: 'нож', difficulty: 1  },
-    { eng: 'fork', rus: 'вилка', difficulty: 1  },
-    { eng: 'spoon', rus: 'ложка', difficulty: 1  },
-    { eng: 'plate', rus: 'тарелка', difficulty: 1  },
-    { eng: 'glass', rus: 'стакан', difficulty: 1  },
-    { eng: 'bottle', rus: 'бутылка', difficulty: 1  },
-    { eng: 'box', rus: 'коробка', difficulty: 1  },
-    { eng: 'bag', rus: 'сумка', difficulty: 1  },
-    { eng: 'shoe', rus: 'туфля', difficulty: 1  },
-    { eng: 'sock', rus: 'носок', difficulty: 1  },
-    { eng: 'hat', rus: 'шапка', difficulty: 1  },
-    { eng: 'glove', rus: 'перчатка', difficulty: 1  },
-    { eng: 'coat', rus: 'пальто', difficulty: 1  },
-    { eng: 'shirt', rus: 'рубашка', difficulty: 1  },
-    { eng: 'pants', rus: 'брюки', difficulty: 1  },
-    { eng: 'dress', rus: 'платье', difficulty: 1  },
-    { eng: 'skirt', rus: 'юбка', difficulty: 1  },
-    { eng: 'sock', rus: 'носок', difficulty: 1  },
-    { eng: 'tie', rus: 'галстук', difficulty: 1  },
-    { eng: 'scarf', rus: 'шарф', difficulty: 1  },
-    { eng: 'ring', rus: 'кольцо', difficulty: 1  },
-    { eng: 'bracelet', rus: 'браслет', difficulty: 1  },
-    { eng: 'earrings', rus: 'серьги', difficulty: 1  },
-    { eng: 'necklace', rus: 'ожерелье', difficulty: 1  },
-    { eng: 'watch', rus: 'часы', difficulty: 1  },
-    { eng: 'wallet', rus: 'кошелек', difficulty: 1  },
-    { eng: 'key', rus: 'ключ', difficulty: 1  },
-    { eng: 'phone', rus: 'телефон', difficulty: 1  },
-    { eng: 'camera', rus: 'камера', difficulty: 1  },
-    { eng: 'television', rus: 'телевизор', difficulty: 1  },
-    { eng: 'radio', rus: 'радио', difficulty: 1  },
-    { eng: 'music', rus: 'музыка', difficulty: 1  },
-    { eng: 'movie', rus: 'фильм', difficulty: 1  },
-    { eng: 'photo', rus: 'фото', difficulty: 1  },
-    { eng: 'video', rus: 'видео', difficulty: 1  },
-    { eng: 'game', rus: 'игра', difficulty: 1  },
-    { eng: 'sport', rus: 'спорт', difficulty: 1  },
-    { eng: 'exercise', rus: 'упражнение', difficulty: 1  },
-    { eng: 'work', rus: 'работа', difficulty: 1  },
-    { eng: 'study', rus: 'учеба', difficulty: 1  },
-    { eng: 'friend', rus: 'друг', difficulty: 1  },
-    { eng: 'family', rus: 'семья', difficulty: 1  },
-    { eng: 'love', rus: 'любовь', difficulty: 1  },
-    { eng: 'happiness', rus: 'счастье', difficulty: 1  },
-    { eng: 'sadness', rus: 'грусть', difficulty: 1  },
-    { eng: 'anger', rus: 'злость', difficulty: 1  },
-    { eng: 'fear', rus: 'страх', difficulty: 1  },
-    { eng: 'surprise', rus: 'удивление', difficulty: 1  },
-    { eng: 'joy', rus: 'радость', difficulty: 1  },
-    { eng: 'peace', rus: 'мир', difficulty: 1  },
-    { eng: 'war', rus: 'война', difficulty: 1  },
-    { eng: 'problem', rus: 'проблема', difficulty: 1  },
-    { eng: 'solution', rus: 'решение', difficulty: 1  },
-    { eng: 'question', rus: 'вопрос', difficulty: 1  },
-    { eng: 'answer', rus: 'ответ', difficulty: 1  },
-    { eng: 'idea', rus: 'идея', difficulty: 1  },
-    { eng: 'dream', rus: 'мечта', difficulty: 1  },
-    { eng: 'goal', rus: 'цель', difficulty: 1  },
-    { eng: 'plan', rus: 'план', difficulty: 1  },
-    { eng: 'task', rus: 'задача', difficulty: 1  },
-    { eng: 'project', rus: 'проект', difficulty: 1  },
-    { eng: 'job', rus: 'работа', difficulty: 1  }
-        ];
-        const words2 = [
+            {eng: 'bar', rus: 'плитка', difficulty: 1},
+            {eng: 'biscuit', rus: 'бисквит', difficulty: 1},
+            {eng: 'bottle', rus: 'бутылка', difficulty: 1},
+            {eng: 'box', rus: 'ящик', difficulty: 1},
+            {eng: 'brown rice', rus: 'коричневый рис', difficulty: 1},
+            {eng: 'butter', rus: 'масло', difficulty: 1},
+            {eng: 'can', rus: 'консерва', difficulty: 1},
+            {eng: 'carton', rus: 'коробка', difficulty: 1},
+            {eng: 'chiken burger', rus: 'куриная котлета', difficulty: 1},
+            {eng: 'chiken leg', rus: 'куриная ножка', difficulty: 1},
+            {eng: 'chips', rus: 'чипсы', difficulty: 1},
+            {eng: 'chocolate', rus: 'шоколад', difficulty: 1},
+            {eng: 'coffee', rus: 'кофе', difficulty: 1},
+            {eng: 'cola', rus: 'кола', difficulty: 1},
+            {eng: 'cream', rus: 'сливки', difficulty: 1},
+            {eng: 'crisp', rus: 'хрустящий', difficulty: 1},
+            {eng: 'cup', rus: 'чашка', difficulty: 1},
+            {eng: 'egg', rus: 'яйцо', difficulty: 1},
+            {eng: 'family-sized', rus: 'семейный(размер)', difficulty: 1},
+            {eng: 'fish', rus: 'рыба', difficulty: 1},
+            {eng: 'fruit', rus: 'фрукт', difficulty: 1},
+            {eng: 'grains', rus: 'злаки', difficulty: 1},
+            {eng: 'grilled', rus: 'приготовленный на гриле', difficulty: 1},
+            {eng: 'hamburger', rus: 'гамбургер', difficulty: 1},
+            {eng: 'healthy', rus: 'полезный', difficulty: 1},
+            {eng: 'herbs', rus: 'зелень', difficulty: 1},
+            {eng: 'honey', rus: 'мед', difficulty: 1},
+            {eng: 'ice cream', rus: 'мороженное', difficulty: 1},
+            {eng: 'jar', rus: 'банка', difficulty: 1},
+            {eng: 'juice', rus: 'сок', difficulty: 1},
+            {eng: 'mayonnaise', rus: 'майонез', difficulty: 1},
+            {eng: 'meat', rus: 'мясо', difficulty: 1},
+            {eng: 'milk', rus: 'молоко', difficulty: 1},
+            {eng: 'nuts', rus: 'орехи', difficulty: 1},
+            {eng: 'oil', rus: 'масло(растительное)', difficulty: 1},
+            {eng: 'olive oil', rus: 'оливковое масло', difficulty: 1},
+            {eng: 'packet', rus: 'пакет', difficulty: 1},
+            {eng: 'pasta', rus: 'паста', difficulty: 1},
+            {eng: 'peas', rus: 'горох', difficulty: 1},
+            {eng: 'pepper', rus: 'перец', difficulty: 1},
+            {eng: 'pizza', rus: 'пицца', difficulty: 1},
+            {eng: 'poultry', rus: 'дамашнаяя птица', difficulty: 1},
+            {eng: 'rice', rus: 'рис', difficulty: 1},
+            {eng: 'salad', rus: 'салат', difficulty: 1},
+            {eng: 'salt', rus: 'соль', difficulty: 1},
+            {eng: 'sandwich', rus: 'сэндвич', difficulty: 1},
+            {eng: 'shack', rus: 'перекус', difficulty: 1},
+            {eng: 'sweets', rus: 'сладости', difficulty: 1},
+            {eng: 'tin', rus: 'банка', difficulty: 1},
+            {eng: 'toast', rus: 'тост', difficulty: 1},
+            {eng: 'tomato', rus: 'помидор', difficulty: 1},
+            {eng: 'tuna', rus: 'тунец', difficulty: 1},
+            {eng: 'vegetables', rus: 'овощи', difficulty: 1},
+            {eng: 'bread', rus: 'хлеб', difficulty: 1},
+            {eng: 'sugar', rus: 'сахар', difficulty: 1},
+            {eng: 'wholemeal', rus: 'с отрубями', difficulty: 1},
+            {eng: 'yoghurt', rus: 'йогурт', difficulty: 1},
+            {eng: 'apple', rus: 'яблоко', difficulty: 1},
+    {eng: 'banana', rus: 'банан', difficulty: 1},
+    {eng: 'orange', rus: 'апельсин', difficulty: 1},
+    {eng: 'pear', rus: 'груша', difficulty: 1},
+    {eng: 'grape', rus: 'виноград', difficulty: 1},
+    {eng: 'lemon', rus: 'лимон', difficulty: 1},
+    {eng: 'strawberry', rus: 'клубника', difficulty: 1},
+    {eng: 'watermelon', rus: 'арбуз', difficulty: 1},
+    {eng: 'peach', rus: 'персик', difficulty: 1},
+    {eng: 'pineapple', rus: 'ананас', difficulty: 1},
+    {eng: 'plum', rus: 'слива', difficulty: 1},
+    {eng: 'kiwi', rus: 'киви', difficulty: 1},
+    {eng: 'melon', rus: 'дыня', difficulty: 1},
+    {eng: 'avocado', rus: 'авокадо', difficulty: 1},
+    {eng: 'mango', rus: 'манго', difficulty: 1},
+    {eng: 'pomegranate', rus: 'гранат', difficulty: 1},
+    {eng: 'blackberry', rus: 'ежевика', difficulty: 1},
+    {eng: 'raspberry', rus: 'малина', difficulty: 1},
+    {eng: 'blueberry', rus: 'голубика', difficulty: 1},
+    {eng: 'cucumber', rus: 'огурец', difficulty: 1},
+    {eng: 'carrot', rus: 'морковь', difficulty: 1},
+    {eng: 'potato', rus: 'картофель', difficulty: 1},
+    {eng: 'onion', rus: 'лук', difficulty: 1},
+    {eng: 'garlic', rus: 'чеснок', difficulty: 1},
+    {eng: 'ginger', rus: 'имбирь', difficulty: 1},
+    {eng: 'broccoli', rus: 'брокколи', difficulty: 1},
+    {eng: 'spinach', rus: 'шпинат', difficulty: 1},
+    {eng: 'lettuce', rus: 'салат', difficulty: 1},
+    {eng: 'cabbage', rus: 'капуста', difficulty: 1},
+    {eng: 'zucchini', rus: 'кабачок', difficulty: 1},
+    {eng: 'eggplant', rus: 'баклажан', difficulty: 1},
+    {eng: 'tomato', rus: 'помидор', difficulty: 1},
+    {eng: 'bell pepper', rus: 'болгарский перец', difficulty: 1},
+    {eng: 'corn', rus: 'кукуруза', difficulty: 1},
+    {eng: 'pea', rus: 'горох', difficulty: 1},
+    {eng: 'green bean', rus: 'зеленая фасоль', difficulty: 1},
+    {eng: 'cherry tomato', rus: 'помидор черри', difficulty: 1},
+    {eng: 'cantaloupe', rus: 'дыня канталупа', difficulty: 1},
+    {eng: 'artichoke', rus: 'артишок', difficulty: 1},
+    {eng: 'cauliflower', rus: 'цветная капуста', difficulty: 1},
+    {eng: 'celery', rus: 'сельдерей', difficulty: 1},
+    {eng: 'radish', rus: 'редис', difficulty: 1},
+    {eng: 'sweet potato', rus: 'батат', difficulty: 1},
+    {eng: 'beetroot', rus: 'свекла', difficulty: 1},
+    {eng: 'squash', rus: 'тыква', difficulty: 1},
+    {eng: 'pumpkin', rus: 'тыква (овощ)', difficulty: 1},
+    {eng: 'cucumber', rus: 'огурец', difficulty: 1},
+    {eng: 'olive', rus: 'олива', difficulty: 1},
+    {eng: 'bean', rus: 'фасоль', difficulty: 1},
+    {eng: 'mushroom', rus: 'гриб', difficulty: 1},
 
-    {
-eng: 'perception',
-rus: 'восприятие',
-difficulty: 2
-},
-{
-eng: 'obstacle',
-rus: 'препятствие',
-difficulty: 2
-},
-{
-eng: 'eloquent',
-rus: 'красноречивый',
-difficulty: 2
-},
-{
-eng: 'ambiguous',
-rus: 'неоднозначный',
-difficulty: 2
-},
-{
-eng: 'precipice',
-rus: 'пропасть',
-difficulty: 2
-},
-{
-eng: 'infrastructure',
-rus: 'инфраструктура',
-difficulty: 2
-},
-{
-eng: 'phenomenon',
-rus: 'явление',
-difficulty: 2
-},
-{
-eng: 'resilience',
-rus: 'устойчивость',
-difficulty: 2
-},
-{
-eng: 'conundrum',
-rus: 'загадка',
-difficulty: 2
-},
-{
-eng: 'manifestation',
-rus: 'проявление',
-difficulty: 2
-},
-{
-eng: 'dilemma',
-rus: 'дилемма',
-difficulty: 2
-},
-{
-eng: 'consequence',
-rus: 'последствие',
-difficulty: 2
-},
-{
-eng: 'paradox',
-rus: 'парадокс',
-difficulty: 2
-},
-{
-eng: 'endeavor',
-rus: 'стремление',
-difficulty: 2
-},
-{
-eng: 'exemplary',
-rus: 'примерный',
-difficulty: 2
-},
-{
-eng: 'complacent',
-rus: 'самодовольный',
-difficulty: 2
-},
-{
-eng: 'jurisdiction',
-rus: 'юрисдикция',
-difficulty: 2
-},
-{
-eng: 'imminent',
-rus: 'неминуемый',
-difficulty: 2
-},
-{
-eng: 'proficient',
-rus: 'умелый',
-difficulty: 2
-},
-{
-eng: 'reverberate',
-rus: 'эхом отзываться',
-difficulty: 2
-},
-{
-eng: 'formidable',
-rus: 'внушительный',
-difficulty: 2
-},
-{
-eng: 'diligent',
-rus: 'усердный',
-difficulty: 2
-},
-{
-eng: 'inquisitive',
-rus: 'любознательный',
-difficulty: 2
-},
-{
-eng: 'eccentric',
-rus: 'эксцентричный',
-difficulty: 2
-},
-{
-eng: 'quintessential',
-rus: 'идеальный',
-difficulty: 2
-},
-{
-eng: 'labyrinth',
-rus: 'лабиринт',
-difficulty: 2
-},
-{
-eng: 'exacerbate',
-rus: 'обострять',
-difficulty: 2
-},
-{
-eng: 'renowned',
-rus: 'прославленный',
-difficulty: 2
-},
-{
-eng: 'unprecedented',
-rus: 'безпрецедентный',
-difficulty: 2
-},
-{
-eng: 'ubiquitous',
-rus: 'вездесущий',
-difficulty: 2
-},
-{
-eng: 'indispensable',
-rus: 'незаменимый',
-difficulty: 2
-},
-{
-eng: 'spontaneous',
-rus: 'спонтанный',
-difficulty: 2
-},
-{
-eng: 'intricate',
-rus: 'сложный',
-difficulty: 2
-},
-{
-eng: 'prolific',
-rus: 'плодовитый',
-difficulty: 2
-},
-{
-eng: 'perplexing',
-rus: 'озадачивающий',
-difficulty: 2
-},
-{
-eng: 'inherent',
-rus: 'присущий',
-difficulty: 2
-},
-{
-eng: 'conducive',
-rus: 'способствующий',
-difficulty: 2
-},
-{
-eng: 'lucrative',
-rus: 'прибыльный',
-difficulty: 2
-},
-{
-eng: 'infallible',
-rus: 'безошибочный',
-difficulty: 2
-},
-{
-eng: 'invaluable',
-rus: 'неоценимый',
-difficulty: 2
-},
-{
-eng: 'conscientious',
-rus: 'добросовестный',
-difficulty: 2
-},
-{
-eng: 'profound',
-rus: 'глубокий',
-difficulty: 2
-},
-{
-eng: 'conspicuous',
-rus: 'заметный',
-difficulty: 2
-},
-{
-eng: 'dubious',
-rus: 'сомнительный',
-difficulty: 2
-},
-{
-eng: 'prosperous',
-rus: 'процветающий',
-difficulty: 2
-},
-{
-eng: 'transient',
-rus: 'мимолетный',
-difficulty: 2
-},
-{
-eng: 'innovative',
-rus: 'инновационный',
-difficulty: 2
-},
-{
-eng: 'cumbersome',
-rus: 'громоздкий',
-difficulty: 2
-},
-{
-eng: 'scrutiny',
-rus: 'изучение',
-difficulty: 2
-},
-{
-eng: 'flourish',
-rus: 'процветать',
-difficulty: 2
-},
-{
-eng: 'tenacious',
-rus: 'упорный',
-difficulty: 2
-},
-{
-eng: 'imperative',
-rus: 'обязательный',
-difficulty: 2
-},
-{
-eng: 'elusive',
-rus: 'неуловимый',
-difficulty: 2
-},
-{
-eng: 'endeavor',
-rus: 'стремление',
-difficulty: 2
-},
-{
-eng: 'profound',
-rus: 'глубокий',
-difficulty: 2
-},
-{
-eng: 'culmination',
-rus: 'крупное событие',
-difficulty: 2
-},
     ];
-    const words3 = [
-    { eng: 'pisyaaaaaaaaaaaa', rus: 'дом', difficulty: 3 },
-    { eng: 'car', rus: 'машина', difficulty: 3 },
-    {
-eng: 'soporific',
-rus: 'снотворный',
-difficulty: 3
-},
-{
-eng: 'lackadaisical',
-rus: 'небрежный',
-difficulty: 3
-},
-{
-eng: 'quixotic',
-rus: 'несбыточный',
-difficulty: 3
-},
-{
-eng: 'discombobulate',
-rus: 'путать',
-difficulty: 3
-},
-{
-eng: 'sesquipedalian',
-rus: 'длинноногий',
-difficulty: 3
-},
-{
-eng: 'gobbledygook',
-rus: 'чушь',
-difficulty: 3
-},
-{
-eng: 'kerfuffle',
-rus: 'суета',
-difficulty: 3
-},
-{
-eng: 'flummox',
-rus: 'смущать',
-difficulty: 3
-},
-{
-eng: 'brouhaha',
-rus: 'шумиха',
-difficulty: 3
-},
-{
-eng: 'perspicacious',
-rus: 'проницательный',
-difficulty: 3
-},
-{
-eng: 'idiosyncrasy',
-rus: 'особенность',
-difficulty: 3
-},
-{
-eng: 'equanimity',
-rus: 'спокойствие',
-difficulty: 3
-},
-{
-eng: 'facetious',
-rus: 'шутливый',
-difficulty: 3
-},
-{
-eng: 'vicissitude',
-rus: 'перемена',
-difficulty: 3
-},
-{
-eng: 'mnemonic',
-rus: 'мнемонический',
-difficulty: 3
-},
-{
-eng: 'serendipity',
-rus: 'счастливая случайность',
-difficulty: 3
-},
-{
-eng: 'truculent',
-rus: 'воинственный',
-difficulty: 3
-},
-{
-eng: 'lugubrious',
-rus: 'мрачный',
-difficulty: 3
-},
-{
-eng: 'obstreperous',
-rus: 'шумный',
-difficulty: 3
-},
-{
-eng: 'doppelgänger',
-rus: 'двойник',
-difficulty: 3
-},
-{
-eng: 'limerence',
-rus: 'любовная лимеренс',
-difficulty: 3
-},
-{
-eng: 'jejune',
-rus: 'нудный',
-difficulty: 3
-},
-{
-eng: 'zeitgeist',
-rus: 'дух времени',
-difficulty: 3
-},
-{
-eng: 'sesquicentennial',
-rus: 'семисотлетие',
-difficulty: 3
-},
-{
-eng: 'unctuous',
-rus: 'поддельно милый',
-difficulty: 3
-},
-{
-eng: 'lagniappe',
-rus: 'подарок от продавца',
-difficulty: 3
-},
-{
-eng: 'egregious',
-rus: 'вопиющий',
-difficulty: 3
-},
-{
-eng: 'persiflage',
-rus: 'легкомыслие',
-difficulty: 3
-},
-{
-eng: 'obsequious',
-rus: 'покорный',
-difficulty: 3
-},
-{
-eng: 'defenestration',
-rus: 'выбрасывание из окна',
-difficulty: 3
-},
-{
-eng: 'tintinnabulation',
-rus: 'звон',
-difficulty: 3
-},
-{
-eng: 'prestidigitation',
-rus: 'фокусы',
-difficulty: 3
-},
+        const words2 = [
+            {eng: 'beverages', rus: 'напитки', difficulty: 2},
+            {eng: 'cereal', rus: 'крупа', difficulty: 2},
+            {eng: 'dairy products', rus: 'молочные продукты', difficulty: 2},
+            {eng: 'fizzy drink', rus: 'газ. напиток', difficulty: 2},
+            {eng: 'junk food', rus: 'нездоровая пища', difficulty: 2},
+            {eng: 'seeds', rus: 'семечки', difficulty: 2},
+            {eng: 'spices', rus: 'специи', difficulty: 2},
+            {eng: 'takeaway', rus: 'на вынос', difficulty: 2},
+            {eng: 'curry', rus: 'карри', difficulty: 2},
+            {eng: 'lamb chop', rus: 'отбивная из баранины', difficulty: 2},
+            {eng: 'lettuce', rus: 'салат латук', difficulty: 2},
+            {eng: 'allergic', rus: 'аллергический', difficulty: 2},
+            {eng: 'appealing', rus: 'привлекательный', difficulty: 2},
+            {eng: 'baked', rus: 'печёный', difficulty: 2},
+            {eng: 'balanced', rus: 'гармоничный', difficulty: 2},
+            {eng: 'boiled', rus: 'варёный', difficulty: 2},
+            {eng: 'boxed', rus: 'в коробке', difficulty: 2},
+            {eng: 'canteen', rus: 'столовая', difficulty: 2},
+            {eng: 'certain', rus: 'определенный', difficulty: 2},
+            {eng: 'creamy', rus: 'кремовый', difficulty: 2},
+            {eng: 'course', rus: 'блюдо', difficulty: 2},
+            {eng: 'crisps', rus: 'чипсы', difficulty: 2},
+            {eng: 'delicious', rus: 'вкусный', difficulty: 2},
+            {eng: 'diet', rus: 'диета', difficulty: 2},
+            {eng: 'effort', rus: 'попытка', difficulty: 2},
+            {eng: 'fried', rus: 'жареный', difficulty: 2},
+            {eng: 'frozen', rus: 'замороженный', difficulty: 2},
+            {eng: 'mashed', rus: 'размятый', difficulty: 2},
+            {eng: 'nutritious', rus: 'питательный', difficulty: 2},
+    {eng: 'organic', rus: 'органический', difficulty: 2},
+    {eng: 'processed', rus: 'обработанный', difficulty: 2},
+    {eng: 'refreshing', rus: 'освежающий', difficulty: 2},
+    {eng: 'salty', rus: 'соленый', difficulty: 2},
+    {eng: 'savory', rus: 'пряный', difficulty: 2},
+    {eng: 'sour', rus: 'кислый', difficulty: 2},
+    {eng: 'spicy', rus: 'острый', difficulty: 2},
+    {eng: 'sweet', rus: 'сладкий', difficulty: 2},
+    {eng: 'tasty', rus: 'вкусный', difficulty: 2},
+    {eng: 'wholesome', rus: 'полноценный', difficulty: 2},
+    {eng: 'yummy', rus: 'вкусняшка', difficulty: 2},
+    {eng: 'appetizer', rus: 'закуска', difficulty: 2},
+    {eng: 'bitter', rus: 'горький', difficulty: 2},
+    {eng: 'condiment', rus: 'приправа', difficulty: 2},
+    {eng: 'crunchy', rus: 'хрустящий', difficulty: 2},
+    {eng: 'flavorful', rus: 'ароматный', difficulty: 2},
+    {eng: 'frosty', rus: 'морозный', difficulty: 2},
+    {eng: 'hearty', rus: 'сытный', difficulty: 2},
+    {eng: 'juicy', rus: 'сочный', difficulty: 2},
+    {eng: 'mouthwatering', rus: 'аппетитный', difficulty: 2},
+    {eng: 'palatable', rus: 'приятный на вкус', difficulty: 2},
+    {eng: 'sizzling', rus: 'шипящий', difficulty: 2},
+    {eng: 'smoky', rus: 'дымчатый', difficulty: 2},
+    {eng: 'tender', rus: 'нежный', difficulty: 2},
+    {eng: 'zingy', rus: 'пикантный', difficulty: 2},
+    {eng: 'crumbly', rus: 'крошащийся', difficulty: 2},
+    {eng: 'grainy', rus: 'крупный', difficulty: 2},
+    {eng: 'meaty', rus: 'мясной', difficulty: 2},
+    {eng: 'spongy', rus: 'пористый', difficulty: 2},
+    {eng: 'sticky', rus: 'липкий', difficulty: 2},
+    {eng: 'creamy', rus: 'кремовый', difficulty: 2},
+    {eng: 'homemade', rus: 'домашний', difficulty: 2},
+    {eng: 'zesty', rus: 'заправочный', difficulty: 2},
+    {eng: 'crispy', rus: 'хрустящий', difficulty: 2},
+    {eng: 'flaky', rus: 'крупнозернистый', difficulty: 2},
+    {eng: 'light', rus: 'легкий', difficulty: 2},
+    {eng: 'rich', rus: 'богатый', difficulty: 2},
+    {eng: 'satisfying', rus: 'удовлетворяющий', difficulty: 2},
+    {eng: 'tart', rus: 'кислый', difficulty: 2},
+    {eng: 'velvety', rus: 'бархатный', difficulty: 2},
+    {eng: 'zesty', rus: 'пикантный', difficulty: 2},
+    {eng: 'sautéed', rus: 'жареный в сковороде', difficulty: 2},
+    {eng: 'simmered', rus: 'тушеный', difficulty: 2},
+    {eng: 'steamed', rus: 'на пару', difficulty: 2},
+    {eng: 'stir-fried', rus: 'жареный в сковороде', difficulty: 2},
+    {eng: 'topped', rus: 'покрытый', difficulty: 2},
+    {eng: 'toasted', rus: 'поджаренный', difficulty: 2},
+    {eng: 'crisped', rus: 'хрустящий', difficulty: 2},
+    {eng: 'poached', rus: 'вареный в воде', difficulty: 2},
+    {eng: 'glazed', rus: 'покрытый глазурью', difficulty: 2},
+    {eng: 'drizzled', rus: 'политый', difficulty: 2},
+    {eng: 'dipped', rus: 'окунутый', difficulty: 2},
+    {eng: 'whipped', rus: 'взбитый', difficulty: 2},
+    {eng: 'breaded', rus: 'обваленный в сухарях', difficulty: 2},
+    {eng: 'sprinkled', rus: 'посыпанный', difficulty: 2},
+    {eng: 'caramelized', rus: 'карамелизованный', difficulty: 2},
+    {eng: 'crusted', rus: 'обваленный', difficulty: 2},
+    {eng: 'battered', rus: 'обваленный в тесте', difficulty: 2},
+            {eng: 'meal', rus: 'прием пищи', difficulty: 2},
+            {eng: 'nourshing', rus: 'питательный', difficulty: 2},
+            {eng: 'origin', rus: 'происхождения', difficulty: 2},
+            {eng: 'overcooked', rus: 'переваренный', difficulty: 2},
+            {eng: 'pickled', rus: 'маринованный', difficulty: 2},
+            {eng: 'poached', rus: 'в мешочек', difficulty: 2},
+            {eng: 'portion', rus: 'порция', difficulty: 2},
+            {eng: 'prepare', rus: 'готовить', difficulty: 2},
+            {eng: 'raw', rus: 'сырой', difficulty: 2},
+            {eng: 'sauce', rus: 'соус', difficulty: 2},
+            {eng: 'scrambled', rus: 'взбитый', difficulty: 2},
+            {eng: 'shaped', rus: 'имеющий форму', difficulty: 2},
+            {eng: 'sour', rus: 'кислый', difficulty: 2},
+            {eng: 'undercooked', rus: 'недоваренный', difficulty: 2},
+            {eng: 'vinegar', rus: 'уксус', difficulty: 2},
+            {eng: 'weight', rus: 'вес', difficulty: 2},
+        ];
+        const words3 = [    {eng: 'exquisite', rus: 'изысканный', difficulty: 3},
+    {eng: 'delectable', rus: 'восхитительный', difficulty: 3},
+    {eng: 'gourmet', rus: 'гурманский', difficulty: 3},
+    {eng: 'delectable', rus: 'обворожительный', difficulty: 3},
+    {eng: 'scrumptious', rus: 'соблазнительный', difficulty: 3},
+    {eng: 'succulent', rus: 'сочный', difficulty: 3},
+    {eng: 'palatable', rus: 'приятный на вкус', difficulty: 3},
+    {eng: 'mouthwatering', rus: 'аппетитный', difficulty: 3},
+    {eng: 'divine', rus: 'божественный', difficulty: 3},
+    {eng: 'ambrosial', rus: 'небесный', difficulty: 3},
+    {eng: 'sumptuous', rus: 'роскошный', difficulty: 3},
+    {eng: 'savory', rus: 'выразительный', difficulty: 3},
+    {eng: 'opulent', rus: 'изысканный', difficulty: 3},
+    {eng: 'lavish', rus: 'щедрый', difficulty: 3},
+    {eng: 'decadent', rus: 'декадентский', difficulty: 3},
+    {eng: 'pungent', rus: 'пронзительный', difficulty: 3},
+    {eng: 'zesty', rus: 'пикантный', difficulty: 3},
+    {eng: 'exotic', rus: 'экзотический', difficulty: 3},
+    {eng: 'aromatic', rus: 'ароматический', difficulty: 3},
+    {eng: 'intriguing', rus: 'интригующий', difficulty: 3},
+    {eng: 'enticing', rus: 'заманчивый', difficulty: 3},
+    {eng: 'nourishing', rus: 'питательный', difficulty: 3},
+    {eng: 'scintillating', rus: 'искристый', difficulty: 3},
+    {eng: 'irresistible', rus: 'непреодолимый', difficulty: 3},
+    {eng: 'sensational', rus: 'потрясающий', difficulty: 3},
+    {eng: 'gastronomic', rus: 'гастрономический', difficulty: 3},
+    {eng: 'culinary', rus: 'кулинарный', difficulty: 3},
+    {eng: 'indulgent', rus: 'сладострастный', difficulty: 3},
+    {eng: 'saporific', rus: 'приятный на вкус', difficulty: 3},
+    {eng: 'appealing', rus: 'привлекательный', difficulty: 3},
+    {eng: 'toothsome', rus: 'вкусный', difficulty: 3},
+    {eng: 'beverages', rus: 'напитки', difficulty: 3},
+            {eng: 'cereal', rus: 'крупа', difficulty: 3},
+            {eng: 'dairy products', rus: 'молочные продукты', difficulty: 3},
+            {eng: 'fizzy drink', rus: 'газ. напиток', difficulty: 3},
+            {eng: 'junk food', rus: 'нездоровая пища', difficulty: 3},
+            {eng: 'seeds', rus: 'семечки', difficulty: 3},
+            {eng: 'spices', rus: 'специи', difficulty: 3},
+            {eng: 'takeaway', rus: 'на вынос', difficulty: 3},
+            {eng: 'curry', rus: 'карри', difficulty: 3},
+            {eng: 'lamb chop', rus: 'отбивная из баранины', difficulty: 3},
+            {eng: 'lettuce', rus: 'салат латук', difficulty: 3},
+            {eng: 'allergic', rus: 'аллергический', difficulty: 3},
+            {eng: 'appealing', rus: 'привлекательный', difficulty: 3},
+            {eng: 'baked', rus: 'печёный', difficulty: 3},
+            {eng: 'balanced', rus: 'гармоничный', difficulty: 3},
+            {eng: 'boiled', rus: 'варёный', difficulty: 3},
+            {eng: 'boxed', rus: 'в коробке', difficulty: 3},
+            {eng: 'canteen', rus: 'столовая', difficulty: 3},
+            {eng: 'certain', rus: 'определенный', difficulty: 3},
+            {eng: 'creamy', rus: 'кремовый', difficulty: 3},
+            {eng: 'course', rus: 'блюдо', difficulty: 3},
+            {eng: 'crisps', rus: 'чипсы', difficulty: 3},
+            {eng: 'delicious', rus: 'вкусный', difficulty: 3},
+            {eng: 'diet', rus: 'диета', difficulty: 3},
+            {eng: 'effort', rus: 'попытка', difficulty: 3},
+            {eng: 'fried', rus: 'жареный', difficulty: 3},
+            {eng: 'frozen', rus: 'замороженный', difficulty: 3},
+            {eng: 'mashed', rus: 'размятый', difficulty: 3},
+            {eng: 'nutritious', rus: 'питательный', difficulty: 3},
+    {eng: 'organic', rus: 'органический', difficulty: 3},
+    {eng: 'processed', rus: 'обработанный', difficulty: 3},
+    {eng: 'refreshing', rus: 'освежающий', difficulty: 3},
+    {eng: 'salty', rus: 'соленый', difficulty: 3},
+    {eng: 'savory', rus: 'пряный', difficulty: 3},
+    {eng: 'sour', rus: 'кислый', difficulty: 3},
+    {eng: 'spicy', rus: 'острый', difficulty: 3},
+    {eng: 'sweet', rus: 'сладкий', difficulty: 3},
+    {eng: 'tasty', rus: 'вкусный', difficulty: 3},
+    {eng: 'wholesome', rus: 'полноценный', difficulty: 3},
+    {eng: 'yummy', rus: 'вкусняшка', difficulty: 3},
+    {eng: 'appetizer', rus: 'закуска', difficulty: 3},
+    {eng: 'bitter', rus: 'горький', difficulty: 3},
+    {eng: 'condiment', rus: 'приправа', difficulty: 3},
+    {eng: 'crunchy', rus: 'хрустящий', difficulty: 3},
+    {eng: 'flavorful', rus: 'ароматный', difficulty: 3},
+    {eng: 'frosty', rus: 'морозный', difficulty: 3},
+    {eng: 'hearty', rus: 'сытный', difficulty: 3},
+    {eng: 'juicy', rus: 'сочный', difficulty: 3},
+    {eng: 'mouthwatering', rus: 'аппетитный', difficulty: 3},
+    {eng: 'palatable', rus: 'приятный на вкус', difficulty: 3},
+    {eng: 'sizzling', rus: 'шипящий', difficulty: 3},
+    {eng: 'smoky', rus: 'дымчатый', difficulty: 3},
+    {eng: 'tender', rus: 'нежный', difficulty: 3},
+    {eng: 'zingy', rus: 'пикантный', difficulty: 3},
+    {eng: 'crumbly', rus: 'крошащийся', difficulty: 3},
+    {eng: 'grainy', rus: 'крупный', difficulty: 3},
+    {eng: 'meaty', rus: 'мясной', difficulty: 3},
+    {eng: 'spongy', rus: 'пористый', difficulty: 3},
+    {eng: 'sticky', rus: 'липкий', difficulty: 3},
+    {eng: 'creamy', rus: 'кремовый', difficulty: 3},
+    {eng: 'homemade', rus: 'домашний', difficulty: 3},
+    {eng: 'zesty', rus: 'заправочный', difficulty: 3},
+    {eng: 'crispy', rus: 'хрустящий', difficulty: 3},
+    {eng: 'flaky', rus: 'крупнозернистый', difficulty: 3},
+    {eng: 'light', rus: 'легкий', difficulty: 3},
+    {eng: 'rich', rus: 'богатый', difficulty: 3},
+    {eng: 'satisfying', rus: 'удовлетворяющий', difficulty: 3},
+    {eng: 'tart', rus: 'кислый', difficulty: 3},
+    {eng: 'velvety', rus: 'бархатный', difficulty: 3},
+    {eng: 'zesty', rus: 'пикантный', difficulty: 3},
+    {eng: 'sautéed', rus: 'жареный в сковороде', difficulty: 3},
+    {eng: 'simmered', rus: 'тушеный', difficulty: 3},
+    {eng: 'steamed', rus: 'на пару', difficulty: 3},
+    {eng: 'stir-fried', rus: 'жареный в сковороде', difficulty: 3},
+    {eng: 'topped', rus: 'покрытый', difficulty: 3},
+    {eng: 'toasted', rus: 'поджаренный', difficulty: 3},
+    {eng: 'crisped', rus: 'хрустящий', difficulty: 3},
+    {eng: 'poached', rus: 'вареный в воде', difficulty: 3},
+    {eng: 'glazed', rus: 'покрытый глазурью', difficulty: 3},
+    {eng: 'drizzled', rus: 'политый', difficulty: 3},
+    {eng: 'dipped', rus: 'окунутый', difficulty: 3},
+    {eng: 'whipped', rus: 'взбитый', difficulty: 3},
+    {eng: 'breaded', rus: 'обваленный в сухарях', difficulty: 3},
+    {eng: 'sprinkled', rus: 'посыпанный', difficulty: 3},
+    {eng: 'caramelized', rus: 'карамелизованный', difficulty: 3},
+    {eng: 'crusted', rus: 'обваленный', difficulty: 3},
+    {eng: 'battered', rus: 'обваленный в тесте', difficulty: 3},
+            {eng: 'meal', rus: 'прием пищи', difficulty: 3},
+            {eng: 'nourshing', rus: 'питательный', difficulty: 3},
+            {eng: 'origin', rus: 'происхождения', difficulty: 3},
+            {eng: 'overcooked', rus: 'переваренный', difficulty: 3},
+            {eng: 'pickled', rus: 'маринованный', difficulty: 3},
+            {eng: 'poached', rus: 'в мешочек', difficulty: 3},
+            {eng: 'portion', rus: 'порция', difficulty: 3},
+            {eng: 'prepare', rus: 'готовить', difficulty: 3},
+            {eng: 'raw', rus: 'сырой', difficulty: 3},
+            {eng: 'sauce', rus: 'соус', difficulty: 3},
+            {eng: 'scrambled', rus: 'взбитый', difficulty: 3},
+            {eng: 'shaped', rus: 'имеющий форму', difficulty: 3},
+            {eng: 'sour', rus: 'кислый', difficulty: 3},
+            {eng: 'undercooked', rus: 'недоваренный', difficulty: 3},
+            {eng: 'vinegar', rus: 'уксус', difficulty: 3},
+            {eng: 'weight', rus: 'вес', difficulty: 3},
+            {eng: 'asparagus', rus: 'спаржа', difficulty: 3},
+    {eng: 'taro', rus: 'таро', difficulty: 3},
+    {eng: 'cassava', rus: 'кассава', difficulty: 3},
+    {eng: 'plantain', rus: 'плантан', difficulty: 3},
+    {eng: 'yam', rus: 'ямс', difficulty: 3},
+    {eng: 'papaya', rus: 'папайя', difficulty: 3},
+    {eng: 'rhubarb', rus: 'ревень', difficulty: 3},
+    {eng: 'date', rus: 'финик', difficulty: 3},
+    {eng: 'fig', rus: 'инжир', difficulty: 3},
+    {eng: 'apricot', rus: 'абрикос', difficulty: 3},
+    {eng: 'nectarine', rus: 'нектарин', difficulty: 3},
+    {eng: 'cantaloupe', rus: 'канталупа', difficulty: 3},
+    {eng: 'honeydew', rus: 'хонедью', difficulty: 3},
+    {eng: 'pumpkin', rus: 'тыква (овощ)', difficulty: 3},
+    {eng: 'beetroot', rus: 'свекла', difficulty: 3},
+    {eng: 'radish', rus: 'редис', difficulty: 3},
+    {eng: 'rutabaga', rus: 'репа', difficulty: 3},
+    {eng: 'watercress', rus: 'кресс-салат', difficulty: 3},
+    {eng: 'kale', rus: 'листовой капуста', difficulty: 3},
+    {eng: 'leek', rus: 'лук-порей', difficulty: 3},
+    {eng: 'shallot', rus: 'шалот', difficulty: 3},
+    {eng: 'ramp', rus: 'лук-баранка', difficulty: 3},
+    {eng: 'endive', rus: 'эндивий', difficulty: 3},
+    {eng: 'escarole', rus: 'эскароль', difficulty: 3},
+    {eng: 'chard', rus: 'свекла-листовая', difficulty: 3},
+    {eng: 'amaranth', rus: 'амарант', difficulty: 3},
+    {eng: 'collard', rus: 'листовой капуста', difficulty: 3},
+    {eng: 'turnip', rus: 'репа', difficulty: 3},
+    {eng: 'jicama', rus: 'мексиканская свекла', difficulty: 3},
+    {eng: 'rutabaga', rus: 'репа', difficulty: 3},
+    {eng: 'daikon', rus: 'даикон', difficulty: 3},
+    {eng: 'bok choy', rus: 'бок чой', difficulty: 3},
+    {eng: 'radicchio', rus: 'радиччо', difficulty: 3},
+    {eng: 'bean sprout', rus: 'бобовая проросток', difficulty: 3},
+    {eng: 'snow pea', rus: 'горошек снеговик', difficulty: 3},
+    {eng: 'sugar snap pea', rus: 'сладкий горошек', difficulty: 3},
+    {eng: 'sorrel', rus: 'щавель', difficulty: 3},
+    {eng: 'bamboo shoot', rus: 'бамбуковые побеги', difficulty: 3},
+    {eng: 'lotus root', rus: 'корень лотоса', difficulty: 3},
+    {eng: 'okra', rus: 'окра', difficulty: 3},
+    {eng: 'fennel', rus: 'фенхель', difficulty: 3},
+    {eng: 'chicory', rus: 'цикорий', difficulty: 3},
+    {eng: 'pattypan', rus: 'патиссон', difficulty: 3},
+    {eng: 'cardoon', rus: 'кардон', difficulty: 3},
+    {eng: 'salsify', rus: 'сальсифи', difficulty: 3},
+    {eng: 'parsnip', rus: 'пастернак', difficulty: 3},
+    {eng: 'kohlrabi', rus: 'кольраби', difficulty: 3},
+    {eng: 'chayote', rus: 'чайот', difficulty: 3},
+    {eng: 'corn salad', rus: 'маш (растение)', difficulty: 3},
+    {eng: 'malabar spinach', rus: 'малабарский шпинат', difficulty: 3},
+    {eng: 'water spinach', rus: 'водный шпинат', difficulty: 3},
+    {eng: 'tatsoi', rus: 'татсой', difficulty: 3},
+    {eng: 'arugula', rus: 'руккола', difficulty: 3},
+    {eng: 'borage', rus: 'бораго', difficulty: 3},
+    {eng: 'chervil', rus: 'черемша', difficulty: 3},
+    {eng: 'cilantro', rus: 'кинза', difficulty: 3},
+    {eng: 'dill', rus: 'укроп', difficulty: 3},
+    {eng: 'marjoram', rus: 'мацислава', difficulty: 3},
+    {eng: 'oregano', rus: 'орегано', difficulty: 3},
+    {eng: 'rosemary', rus: 'розмарин', difficulty: 3},
+    {eng: 'sage', rus: 'шалфей', difficulty: 3},
+    {eng: 'thyme', rus: 'тимьян', difficulty: 3},
 
-{
-eng: 'onomatopoeia',
-rus: 'звукоподражание',
-difficulty: 3
-},
-{
-eng: 'sesquicentennial',
-rus: 'семисотлетие',
-difficulty: 3
-},
-{
-eng: 'rhinorrhea',
-rus: 'насморк',
-difficulty: 3
-},
-{
-eng: 'triskaidekaphobia',
-rus: 'боязнь числа тринадцать',
-difficulty: 3
-},
-{
-eng: 'odontorrhea',
-rus: 'повышенное слюноотделение',
-difficulty: 3
-},
-{
-eng: 'ichthyophobia',
-rus: 'боязнь рыб',
-difficulty: 3
-},
-{
-eng: 'epistemology',
-rus: 'эпистемология',
-difficulty: 3
-},
-{
-eng: 'sycophant',
-rus: 'льстец',
-difficulty: 3
-},
-{
-eng: 'malfeasance',
-rus: 'проступок',
-difficulty: 3
-},
-{
-eng: 'mellifluous',
-rus: 'сладкозвучный',
-difficulty: 3
-},
-{
-eng: 'sagacious',
-rus: 'прозорливый',
-difficulty: 3
-},
-{
-eng: 'circumlocution',
-rus: 'обходительность',
-difficulty: 3
-},
-{
-eng: 'ubiquitous',
-rus: 'вездесущий',
-difficulty: 3
-},
-{
-eng: 'ludicrous',
-rus: 'смехотворный',
-difficulty: 3
-},
-{
-eng: 'idiosyncrasy',
-rus: 'идиосинкразия',
-difficulty: 3
-},
-{
-eng: 'cognizant',
-rus: 'осведомленный',
-difficulty: 3
-},
-{
-eng: 'exacerbate',
-rus: 'обострять',
-difficulty: 3
-},
-{
-eng: 'precarious',
-rus: 'ненадежный',
-difficulty: 3
-},
-{
-eng: 'venerable',
-rus: 'почтенный',
-difficulty: 3
-},
-{
-eng: 'ostentatious',
-rus: 'показной',
-difficulty: 3
-},
-{
-eng: 'ephemeral',
-rus: 'мимолетный',
-difficulty: 3
-},
-{
-eng: 'deleterious',
-rus: 'вредный',
-difficulty: 3
-},
-{
-eng: 'obfuscate',
-rus: 'затуманивать',
-difficulty: 3
-},
-{
-eng: 'juxtaposition',
-rus: 'параллельное расположение',
-difficulty: 3
-},
-{
-eng: 'equanimity',
-rus: 'хладнокровие',
-difficulty: 3
-},
-{
-eng: 'perpetuity',
-rus: 'вечность',
-difficulty: 3
-},
-{
-eng: 'ubiquity',
-rus: 'вездесущесть',
-difficulty: 3
-},
-{
-eng: 'quintessential',
-rus: 'идеальный',
-difficulty: 3
-},
-{
-eng: 'disseminate',
-rus: 'распространять',
-difficulty: 3
-},
-{
-eng: 'anachronistic',
-rus: 'анахронический',
-difficulty: 3
-},
-{
-eng: 'solipsistic',
-rus: 'солипсистический',
-difficulty: 3
-},
-{
-eng: 'circumlocution',
-rus: 'обходной путь',
-difficulty: 3
-},
-{
-eng: 'indefatigable',
-rus: 'неутомимый',
-difficulty: 3
-},
-{
-eng: 'mendacious',
-rus: 'лживый',
-difficulty: 3
-},
-{
-eng: 'quixotic',
-rus: 'рыцарский',
-difficulty: 3
-},
-{
-eng: 'myopic',
-rus: 'короткозорий',
-difficulty: 3
-},
-{
-eng: 'esoteric',
-rus: 'эзотерический',
-difficulty: 3
-},
-{
-eng: 'onerous',
-rus: 'тяжелый',
-difficulty: 3
-},
-{
-eng: 'pellucid',
-rus: 'прозрачный',
-difficulty: 3
-},
-{
-eng: 'proclivity',
-rus: 'склонность',
-difficulty: 3
-},
-{
-eng: 'pulchritudinous',
-rus: 'красивый',
-difficulty: 3
-},
-{
-eng: 'quagmire',
-rus: 'трясина',
-difficulty: 3
-},
-{
-eng: 'refulgent',
-rus: 'светящийся',
-difficulty: 3
-},
-{
-eng: 'sesquipedalian',
-rus: 'длинношеее',
-difficulty: 3
-},
-{
-eng: 'ubiquitarian',
-rus: 'вездесущий',
-difficulty: 3
-},
-{
-eng: 'vilipend',
-rus: 'упрекать',
-difficulty: 3
-},
-{
-eng: 'vituperative',
-rus: 'ругательный',
-difficulty: 3
-},
-{
-eng: 'fuliginous',
-rus: 'темный',
-difficulty: 3
-},
-{
-eng: 'peregrinate',
-rus: 'путешествовать',
-difficulty: 3
-},
-{
-eng: 'percipient',
-rus: 'понимающий',
-difficulty: 3
-},
-{
-eng: 'vociferous',
-rus: 'крикливый',
-difficulty: 3
-},
-{
-eng: 'lachrymose',
-rus: 'печальный',
-difficulty: 3
-},];
+            ];
         let timerValue = 60;
         let score = 0;
 
@@ -1002,7 +643,7 @@ difficulty: 3
 
 // Добавлена функция для отображения окончательного счета
 function displayFinalScore() {
-    document.getElementById('score').textContent = `Final Score: ${score}`;
+    document.getElementById('score').textContent = `Собрано очков: ${score}`;
     document.getElementById('difficulty').style.display = 'none'; // Скрыть отображение сложности
     document.getElementById('options').style.display = 'none'; // Скрыть варианты ответов
     document.getElementById('word').style.display = 'none'; // Скрыть слово
@@ -1014,7 +655,7 @@ function updateTimer() {
 
 function updateScore() {
     const scoreElement = document.getElementById('score');
-    scoreElement.textContent = `Score: ${score}`;
+    scoreElement.textContent = `Очки: ${score}`;
     
     // Определение сложности в зависимости от количества очков
     let difficulty = 1;
@@ -1025,7 +666,7 @@ function updateScore() {
     }
     
     const difficultyElement = document.getElementById('difficulty');
-    difficultyElement.textContent = `Difficulty: ${difficulty}`;
+    difficultyElement.textContent = `Сложность: ${difficulty}`;
 }
 function hideResult() {
     document.getElementById('result').style.display = 'none';
